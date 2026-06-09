@@ -337,7 +337,12 @@
       .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' },
         () => fetchAndRender()
       )
-      .subscribe();
+      .subscribe(status => {
+        console.log('Realtime status:', status);
+      });
+
+    // ── Polling fallback every 10s (in case realtime fails) ───────
+    setInterval(fetchAndRender, 10000);
 
     // ── Add / Remove ──────────────────────────────────────────────
     async function handleTransaction(type) {
