@@ -1,0 +1,34 @@
+{
+  "name": "ghar-kharch",
+  "version": "1.0.0",
+  "description": "Minimal money tracker desktop app",
+  "author": "Ghar Kharch",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.gharkharch.app",
+    "productName": "Ghar Kharch",
+    "icon": "icon.ico",
+    "win": {
+      "target": [
+        { "target": "zip", "arch": ["x64"] }
+      ],
+      "icon": "icon.ico"
+    },
+    "files": [
+      "index.html",
+      "main.js",
+      "icon.ico",
+      "icon.png"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5"
+  }
+}
