@@ -11,11 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Ghar Kharch" />
   <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -28,189 +24,126 @@
       color: #333;
     }
 
-    .container {
-      width: 100%;
-      max-width: 480px;
-    }
+    .container { width: 100%; max-width: 480px; }
 
-    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
     }
-
-    .header h1 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #1a1a2e;
-    }
+    .header h1 { font-size: 1.4rem; font-weight: 700; color: #1a1a2e; }
 
     #langBtn {
-      background: #1a1a2e;
-      color: #fff;
-      border: none;
-      padding: 7px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: background 0.2s;
+      background: #1a1a2e; color: #fff; border: none;
+      padding: 7px 16px; border-radius: 20px; cursor: pointer;
+      font-size: 0.85rem; transition: background 0.2s;
+    }
+    #langBtn:hover { background: #16213e; }
+
+    /* Live dot */
+    .live-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; color: #22c55e; font-weight: 600;
+      margin-bottom: 10px; justify-content: flex-end;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(0.7); }
     }
 
-    #langBtn:hover {
-      background: #16213e;
-    }
-
-    /* Balance Card */
     .balance-card {
-      background: #1a1a2e;
-      color: #fff;
-      border-radius: 16px;
-      padding: 28px 24px;
-      text-align: center;
-      margin-bottom: 24px;
+      background: #1a1a2e; color: #fff;
+      border-radius: 16px; padding: 28px 24px;
+      text-align: center; margin-bottom: 24px;
       box-shadow: 0 4px 20px rgba(26,26,46,0.15);
     }
-
     .balance-label {
-      font-size: 0.85rem;
-      opacity: 0.75;
-      margin-bottom: 8px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      font-size: 0.85rem; opacity: 0.75; margin-bottom: 8px;
+      letter-spacing: 0.05em; text-transform: uppercase;
     }
+    .balance-amount { font-size: 2.4rem; font-weight: 700; }
 
-    .balance-amount {
-      font-size: 2.4rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
-    /* Input Section */
     .input-section {
-      background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 24px;
+      background: #fff; border-radius: 16px;
+      padding: 20px; margin-bottom: 24px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     }
-
     .input-section input {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      margin-bottom: 12px;
-      outline: none;
-      transition: border-color 0.2s;
-      color: #333;
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #e2e8f0; border-radius: 10px;
+      font-size: 0.95rem; margin-bottom: 12px;
+      outline: none; color: #333; transition: border-color 0.2s;
     }
+    .input-section input:focus { border-color: #1a1a2e; }
 
-    .input-section input:focus {
-      border-color: #1a1a2e;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-    }
-
+    .btn-row { display: flex; gap: 10px; }
     .btn-add, .btn-remove {
-      flex: 1;
-      padding: 11px;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
+      flex: 1; padding: 11px; border: none; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
       transition: opacity 0.2s, transform 0.1s;
     }
-
-    .btn-add:active, .btn-remove:active {
-      transform: scale(0.97);
-    }
-
-    .btn-add {
-      background: #22c55e;
-      color: #fff;
-    }
-
+    .btn-add:active, .btn-remove:active { transform: scale(0.97); }
+    .btn-add    { background: #22c55e; color: #fff; }
     .btn-add:hover { opacity: 0.88; }
-
-    .btn-remove {
-      background: #ef4444;
-      color: #fff;
-    }
-
+    .btn-remove { background: #ef4444; color: #fff; }
     .btn-remove:hover { opacity: 0.88; }
 
-    /* Transactions */
     .transactions-section h2 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 12px;
+      font-size: 0.95rem; font-weight: 600; color: #666;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
     }
-
-    .transaction-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .transaction-list { display: flex; flex-direction: column; gap: 8px; }
 
     .transaction-item {
-      background: #fff;
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      background: #fff; border-radius: 12px; padding: 14px 16px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06); gap: 10px;
     }
-
-    .transaction-reason {
-      font-size: 0.92rem;
-      color: #555;
-    }
-
-    .transaction-amount {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    .amount-add  { color: #16a34a; }
+    .txn-left { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+    .transaction-reason { font-size: 0.92rem; color: #555; }
+    .txn-meta { font-size: 0.75rem; color: #bbb; }
+    .transaction-amount { font-size: 1rem; font-weight: 700; white-space: nowrap; }
+    .amount-add    { color: #16a34a; }
     .amount-remove { color: #dc2626; }
 
     .empty-state {
-      text-align: center;
-      color: #aaa;
-      font-size: 0.9rem;
-      padding: 30px 0;
+      text-align: center; color: #aaa;
+      font-size: 0.9rem; padding: 30px 0;
     }
 
-    /* ── Install Banner ── */
+    /* Loading overlay */
+    #loadingOverlay {
+      position: fixed; inset: 0;
+      background: #f0f4f8;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999; gap: 14px;
+    }
+    #loadingOverlay.hidden { display: none; }
+    .spinner {
+      width: 40px; height: 40px; border: 4px solid #e2e8f0;
+      border-top-color: #1a1a2e; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loadingOverlay p { color: #888; font-size: 0.9rem; }
+
+    /* Install Banner */
     #installBanner {
       display: none;
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
+      position: fixed; bottom: 20px; left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 32px);
-      max-width: 460px;
-      background: #1a1a2e;
-      color: #fff;
-      border-radius: 16px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-      z-index: 999;
+      width: calc(100% - 32px); max-width: 460px;
+      background: #1a1a2e; color: #fff; border-radius: 16px;
+      padding: 14px 18px; align-items: center;
+      justify-content: space-between; gap: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25); z-index: 998;
     }
     #installBanner.hidden { display: none !important; }
     .install-left { display: flex; align-items: center; gap: 12px; }
@@ -218,35 +151,35 @@
     .install-text { font-size: 0.88rem; line-height: 1.4; }
     .install-text strong { display: block; font-size: 0.95rem; }
     #installBtn {
-      background: #22c55e;
-      color: #fff;
-      border: none;
-      padding: 9px 18px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
+      background: #22c55e; color: #fff; border: none;
+      padding: 9px 18px; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      white-space: nowrap; flex-shrink: 0;
     }
     #dismissBtn {
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.5);
-      font-size: 1.3rem;
-      cursor: pointer;
-      line-height: 1;
-      flex-shrink: 0;
-      padding: 0 2px;
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-size: 1.3rem; cursor: pointer; flex-shrink: 0; padding: 0 2px;
     }
   </style>
 </head>
 <body>
+
+  <!-- Loading -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Connecting...</p>
+  </div>
+
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <h1 id="appTitle">Money Tracker</h1>
       <button id="langBtn">हिंदी</button>
+    </div>
+
+    <!-- Live indicator -->
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <span id="liveLabel">Live – shared with everyone</span>
     </div>
 
     <!-- Balance -->
@@ -258,9 +191,9 @@
     <!-- Input -->
     <div class="input-section">
       <input type="number" id="amountInput" placeholder="Amount (₹)" min="0" />
-      <input type="text" id="reasonInput" placeholder="Reason" />
+      <input type="text"   id="reasonInput" placeholder="Reason" />
       <div class="btn-row">
-        <button class="btn-add" id="addBtn" onclick="handleTransaction('add')">+ Add Money</button>
+        <button class="btn-add"    id="addBtn"    onclick="handleTransaction('add')">+ Add Money</button>
         <button class="btn-remove" id="removeBtn" onclick="handleTransaction('remove')">- Remove Money</button>
       </div>
     </div>
@@ -287,134 +220,152 @@
     <button id="dismissBtn" aria-label="Dismiss">×</button>
   </div>
 
+  <!-- Firebase SDK (v9 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
   <script>
-    // ── Language strings ──────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────
+    // 🔥 FIREBASE CONFIG
+    // Replace these values with your own from:
+    // console.firebase.google.com → Project Settings → Your Apps → Web
+    // ─────────────────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey:            "REPLACE_WITH_YOUR_API_KEY",
+      authDomain:        "REPLACE_WITH_YOUR_AUTH_DOMAIN",
+      projectId:         "REPLACE_WITH_YOUR_PROJECT_ID",
+      storageBucket:     "REPLACE_WITH_YOUR_STORAGE_BUCKET",
+      messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
+      appId:             "REPLACE_WITH_YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const txnCol = db.collection('transactions');
+
+    // ── Language ──────────────────────────────────────────────────
     const strings = {
       en: {
-        appTitle: 'Money Tracker',
-        balanceLabel: 'Total Balance',
-        amountPlaceholder: 'Amount (₹)',
-        reasonPlaceholder: 'Reason',
-        addBtn: '+ Add Money',
-        removeBtn: '- Remove Money',
-        transactionsLabel: 'Transactions',
-        emptyState: 'No transactions yet.',
-        langBtn: 'हिंदी',
+        appTitle: 'Money Tracker', balanceLabel: 'Total Balance',
+        amountPlaceholder: 'Amount (₹)', reasonPlaceholder: 'Reason',
+        addBtn: '+ Add Money', removeBtn: '- Remove Money',
+        transactionsLabel: 'Transactions', emptyState: 'No transactions yet.',
+        langBtn: 'हिंदी', liveLabel: 'Live – shared with everyone',
         alertAmount: 'Please enter a valid amount.',
         alertReason: 'Please enter a reason.',
       },
       hi: {
-        appTitle: 'पैसे ट्रैकर',
-        balanceLabel: 'कुल बैलेंस',
-        amountPlaceholder: 'राशि (₹)',
-        reasonPlaceholder: 'कारण',
-        addBtn: '+ पैसे जोड़ें',
-        removeBtn: '- पैसे हटाएं',
-        transactionsLabel: 'लेन-देन',
-        emptyState: 'अभी कोई लेन-देन नहीं।',
-        langBtn: 'English',
+        appTitle: 'पैसे ट्रैकर', balanceLabel: 'कुल बैलेंस',
+        amountPlaceholder: 'राशि (₹)', reasonPlaceholder: 'कारण',
+        addBtn: '+ पैसे जोड़ें', removeBtn: '- पैसे हटाएं',
+        transactionsLabel: 'लेन-देन', emptyState: 'अभी कोई लेन-देन नहीं।',
+        langBtn: 'English', liveLabel: 'लाइव – सभी के लिए',
         alertAmount: 'कृपया सही राशि दर्ज करें।',
         alertReason: 'कृपया कारण दर्ज करें।',
       }
     };
 
-    // ── State ─────────────────────────────────────────────────────
     let lang = localStorage.getItem('lang') || 'en';
-    let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
 
-    // ── Save ──────────────────────────────────────────────────────
-    function save() {
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-      localStorage.setItem('lang', lang);
-    }
-
-    // ── Render language ───────────────────────────────────────────
     function applyLang() {
       const s = strings[lang];
-      document.getElementById('appTitle').textContent = s.appTitle;
-      document.getElementById('balanceLabel').textContent = s.balanceLabel;
-      document.getElementById('amountInput').placeholder = s.amountPlaceholder;
-      document.getElementById('reasonInput').placeholder = s.reasonPlaceholder;
-      document.getElementById('addBtn').textContent = s.addBtn;
-      document.getElementById('removeBtn').textContent = s.removeBtn;
+      document.getElementById('appTitle').textContent          = s.appTitle;
+      document.getElementById('balanceLabel').textContent      = s.balanceLabel;
+      document.getElementById('amountInput').placeholder       = s.amountPlaceholder;
+      document.getElementById('reasonInput').placeholder       = s.reasonPlaceholder;
+      document.getElementById('addBtn').textContent            = s.addBtn;
+      document.getElementById('removeBtn').textContent         = s.removeBtn;
       document.getElementById('transactionsLabel').textContent = s.transactionsLabel;
-      document.getElementById('langBtn').textContent = s.langBtn;
-      const empty = document.getElementById('emptyState');
-      if (empty) empty.textContent = s.emptyState;
+      document.getElementById('langBtn').textContent           = s.langBtn;
+      document.getElementById('liveLabel').textContent         = s.liveLabel;
     }
 
-    // ── Render balance ────────────────────────────────────────────
-    function renderBalance() {
-      const total = transactions.reduce((sum, t) => {
-        return t.type === 'add' ? sum + t.amount : sum - t.amount;
-      }, 0);
+    document.getElementById('langBtn').addEventListener('click', () => {
+      lang = lang === 'en' ? 'hi' : 'en';
+      localStorage.setItem('lang', lang);
+      applyLang();
+    });
+
+    // ── Render ────────────────────────────────────────────────────
+    function renderAll(docs) {
+      // Balance
+      const total = docs.reduce((s, d) => d.type === 'add' ? s + d.amount : s - d.amount, 0);
       document.getElementById('balanceAmount').textContent = '₹' + total.toLocaleString('en-IN');
-    }
 
-    // ── Render transactions ───────────────────────────────────────
-    function renderTransactions() {
+      // List (latest first — already ordered desc from Firestore)
       const list = document.getElementById('transactionList');
-      list.innerHTML = '';
-
-      if (transactions.length === 0) {
-        list.innerHTML = `<div class="empty-state" id="emptyState">${strings[lang].emptyState}</div>`;
+      if (docs.length === 0) {
+        list.innerHTML = `<div class="empty-state">${strings[lang].emptyState}</div>`;
         return;
       }
 
-      // latest first
-      [...transactions].reverse().forEach(t => {
-        const item = document.createElement('div');
-        item.className = 'transaction-item';
-
-        const reason = document.createElement('span');
-        reason.className = 'transaction-reason';
-        reason.textContent = t.reason;
-
-        const amount = document.createElement('span');
-        amount.className = 'transaction-amount ' + (t.type === 'add' ? 'amount-add' : 'amount-remove');
-        amount.textContent = (t.type === 'add' ? '+' : '-') + '₹' + t.amount.toLocaleString('en-IN');
-
-        item.appendChild(reason);
-        item.appendChild(amount);
-        list.appendChild(item);
-      });
+      list.innerHTML = docs.map(t => {
+        const date = t.createdAt ? new Date(t.createdAt.toDate()).toLocaleString('en-IN', {
+          day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
+        }) : '';
+        return `
+          <div class="transaction-item">
+            <div class="txn-left">
+              <span class="transaction-reason">${esc(t.reason)}</span>
+              ${date ? `<span class="txn-meta">${date}</span>` : ''}
+            </div>
+            <span class="transaction-amount ${t.type === 'add' ? 'amount-add' : 'amount-remove'}">
+              ${t.type === 'add' ? '+' : '−'}₹${t.amount.toLocaleString('en-IN')}
+            </span>
+          </div>`;
+      }).join('');
     }
 
-    // ── Handle transaction ────────────────────────────────────────
-    function handleTransaction(type) {
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── Real-time listener ────────────────────────────────────────
+    txnCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll(docs);
+    }, err => {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      console.error(err);
+    });
+
+    // ── Add / Remove ──────────────────────────────────────────────
+    async function handleTransaction(type) {
       const s = strings[lang];
       const amountVal = parseFloat(document.getElementById('amountInput').value);
-      const reason = document.getElementById('reasonInput').value.trim();
+      const reason    = document.getElementById('reasonInput').value.trim();
 
       if (!amountVal || amountVal <= 0) { alert(s.alertAmount); return; }
-      if (!reason) { alert(s.alertReason); return; }
+      if (!reason)                       { alert(s.alertReason); return; }
 
-      transactions.push({ type, amount: amountVal, reason });
-      save();
-      renderBalance();
-      renderTransactions();
+      // Disable buttons while saving
+      document.getElementById('addBtn').disabled    = true;
+      document.getElementById('removeBtn').disabled = true;
 
-      document.getElementById('amountInput').value = '';
-      document.getElementById('reasonInput').value = '';
+      try {
+        await txnCol.add({
+          type,
+          amount: amountVal,
+          reason,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('amountInput').value = '';
+        document.getElementById('reasonInput').value = '';
+      } catch(e) {
+        alert('Error saving. Check Firebase config.');
+        console.error(e);
+      }
+
+      document.getElementById('addBtn').disabled    = false;
+      document.getElementById('removeBtn').disabled = false;
     }
-
-    // ── Toggle language ───────────────────────────────────────────
-    document.getElementById('langBtn').addEventListener('click', () => {
-      lang = lang === 'en' ? 'hi' : 'en';
-      save();
-      applyLang();
-      renderTransactions(); // re-render empty state text if needed
-    });
 
     // ── Init ──────────────────────────────────────────────────────
     applyLang();
-    renderBalance();
-    renderTransactions();
 
-    // ── PWA: Service Worker + Install prompt ──────────────────────
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js');
-    }
+    // ── PWA ───────────────────────────────────────────────────────
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
     let deferredPrompt = null;
     const banner = document.getElementById('installBanner');
@@ -425,23 +376,15 @@
       banner.classList.remove('hidden');
       banner.style.display = 'flex';
     });
-
     document.getElementById('installBtn').addEventListener('click', async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      await deferredPrompt.userChoice;
       deferredPrompt = null;
       banner.classList.add('hidden');
     });
-
-    document.getElementById('dismissBtn').addEventListener('click', () => {
-      banner.classList.add('hidden');
-    });
-
-    window.addEventListener('appinstalled', () => {
-      banner.classList.add('hidden');
-      deferredPrompt = null;
-    });
+    document.getElementById('dismissBtn').addEventListener('click', () => banner.classList.add('hidden'));
+    window.addEventListener('appinstalled', () => { banner.classList.add('hidden'); deferredPrompt = null; });
   </script>
 </body>
 </html>
