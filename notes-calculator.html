@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Notes Calculator</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Ghar Kharch" />
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -224,6 +230,43 @@
       font-size: 0.88rem;
       padding: 24px 0;
     }
+
+    /* ── Install Banner ── */
+    #installBanner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 440px;
+      background: #1a1a2e;
+      color: #fff;
+      border-radius: 16px;
+      padding: 14px 18px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      z-index: 999;
+    }
+    #installBanner.hidden { display: none !important; }
+    .install-left { display: flex; align-items: center; gap: 12px; }
+    .install-left img { width: 40px; height: 40px; border-radius: 10px; }
+    .install-text { font-size: 0.88rem; line-height: 1.4; }
+    .install-text strong { display: block; font-size: 0.95rem; }
+    #installBtn {
+      background: #22c55e; color: #fff; border: none;
+      padding: 9px 18px; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    #dismissBtn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.3rem; cursor: pointer;
+      line-height: 1; flex-shrink: 0; padding: 0 2px;
+    }
   </style>
 </head>
 <body>
@@ -307,6 +350,19 @@
     <div class="empty">No transactions yet.</div>
   </div>
 </div>
+
+  <!-- Install Banner -->
+  <div id="installBanner" class="hidden">
+    <div class="install-left">
+      <img src="icons/icon-192x192.png" alt="icon" />
+      <div class="install-text">
+        <strong>Ghar Kharch</strong>
+        Install app on your phone
+      </div>
+    </div>
+    <button id="installBtn">Install</button>
+    <button id="dismissBtn" aria-label="Dismiss">×</button>
+  </div>
 
 <script>
   // ── State ────────────────────────────────────────────────────────
@@ -408,6 +464,38 @@
   recalc();
   renderTxns();
   updateTotal();
+
+  // ── PWA ───────────────────────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+
+  let deferredPrompt = null;
+  const banner = document.getElementById('installBanner');
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    banner.classList.remove('hidden');
+    banner.style.display = 'flex';
+  });
+
+  document.getElementById('installBtn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    banner.classList.add('hidden');
+  });
+
+  document.getElementById('dismissBtn').addEventListener('click', () => {
+    banner.classList.add('hidden');
+  });
+
+  window.addEventListener('appinstalled', () => {
+    banner.classList.add('hidden');
+    deferredPrompt = null;
+  });
 </script>
 </body>
 </html>
