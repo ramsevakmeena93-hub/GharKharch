@@ -27,10 +27,8 @@
     .container { width: 100%; max-width: 480px; }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 16px;
     }
     .header h1 { font-size: 1.4rem; font-weight: 700; color: #1a1a2e; }
 
@@ -41,26 +39,23 @@
     }
     #langBtn:hover { background: #16213e; }
 
-    /* Live dot */
     .live-badge {
       display: flex; align-items: center; gap: 6px;
       font-size: 0.75rem; color: #22c55e; font-weight: 600;
-      margin-bottom: 10px; justify-content: flex-end;
+      margin-bottom: 16px; justify-content: flex-end;
     }
     .live-dot {
       width: 8px; height: 8px; border-radius: 50%;
-      background: #22c55e;
-      animation: pulse 1.5s infinite;
+      background: #22c55e; animation: pulse 1.5s infinite;
     }
     @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.4; transform: scale(0.7); }
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.7); }
     }
 
     .balance-card {
-      background: #1a1a2e; color: #fff;
-      border-radius: 16px; padding: 28px 24px;
-      text-align: center; margin-bottom: 24px;
+      background: #1a1a2e; color: #fff; border-radius: 16px;
+      padding: 28px 24px; text-align: center; margin-bottom: 24px;
       box-shadow: 0 4px 20px rgba(26,26,46,0.15);
     }
     .balance-label {
@@ -70,9 +65,8 @@
     .balance-amount { font-size: 2.4rem; font-weight: 700; }
 
     .input-section {
-      background: #fff; border-radius: 16px;
-      padding: 20px; margin-bottom: 24px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      background: #fff; border-radius: 16px; padding: 20px;
+      margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     }
     .input-section input {
       width: 100%; padding: 11px 14px;
@@ -93,6 +87,7 @@
     .btn-add:hover { opacity: 0.88; }
     .btn-remove { background: #ef4444; color: #fff; }
     .btn-remove:hover { opacity: 0.88; }
+    .btn-add:disabled, .btn-remove:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .transactions-section h2 {
       font-size: 0.95rem; font-weight: 600; color: #666;
@@ -105,22 +100,20 @@
       display: flex; justify-content: space-between; align-items: flex-start;
       box-shadow: 0 1px 6px rgba(0,0,0,0.06); gap: 10px;
     }
-    .txn-left { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
-    .transaction-reason { font-size: 0.92rem; color: #555; }
-    .txn-meta { font-size: 0.75rem; color: #bbb; }
+    .txn-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+    .transaction-reason { font-size: 0.92rem; color: #444; }
+    .txn-meta { font-size: 0.74rem; color: #bbb; }
     .transaction-amount { font-size: 1rem; font-weight: 700; white-space: nowrap; }
     .amount-add    { color: #16a34a; }
     .amount-remove { color: #dc2626; }
 
     .empty-state {
-      text-align: center; color: #aaa;
-      font-size: 0.9rem; padding: 30px 0;
+      text-align: center; color: #aaa; font-size: 0.9rem; padding: 30px 0;
     }
 
-    /* Loading overlay */
+    /* Loading */
     #loadingOverlay {
-      position: fixed; inset: 0;
-      background: #f0f4f8;
+      position: fixed; inset: 0; background: #f0f4f8;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       z-index: 9999; gap: 14px;
@@ -136,10 +129,8 @@
 
     /* Install Banner */
     #installBanner {
-      display: none;
-      position: fixed; bottom: 20px; left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 32px); max-width: 460px;
+      display: none; position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%); width: calc(100% - 32px); max-width: 460px;
       background: #1a1a2e; color: #fff; border-radius: 16px;
       padding: 14px 18px; align-items: center;
       justify-content: space-between; gap: 12px;
@@ -152,9 +143,8 @@
     .install-text strong { display: block; font-size: 0.95rem; }
     #installBtn {
       background: #22c55e; color: #fff; border: none;
-      padding: 9px 18px; border-radius: 10px;
-      font-size: 0.88rem; font-weight: 600; cursor: pointer;
-      white-space: nowrap; flex-shrink: 0;
+      padding: 9px 18px; border-radius: 10px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
     }
     #dismissBtn {
       background: none; border: none; color: rgba(255,255,255,0.5);
@@ -164,7 +154,6 @@
 </head>
 <body>
 
-  <!-- Loading -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <p>Connecting...</p>
@@ -176,19 +165,16 @@
       <button id="langBtn">हिंदी</button>
     </div>
 
-    <!-- Live indicator -->
     <div class="live-badge">
       <div class="live-dot"></div>
       <span id="liveLabel">Live – shared with everyone</span>
     </div>
 
-    <!-- Balance -->
     <div class="balance-card">
       <div class="balance-label" id="balanceLabel">Total Balance</div>
       <div class="balance-amount" id="balanceAmount">₹0</div>
     </div>
 
-    <!-- Input -->
     <div class="input-section">
       <input type="number" id="amountInput" placeholder="Amount (₹)" min="0" />
       <input type="text"   id="reasonInput" placeholder="Reason" />
@@ -198,16 +184,14 @@
       </div>
     </div>
 
-    <!-- Transactions -->
     <div class="transactions-section">
       <h2 id="transactionsLabel">Transactions</h2>
       <div class="transaction-list" id="transactionList">
-        <div class="empty-state" id="emptyState">No transactions yet.</div>
+        <div class="empty-state">No transactions yet.</div>
       </div>
     </div>
   </div>
 
-  <!-- Install Banner -->
   <div id="installBanner" class="hidden">
     <div class="install-left">
       <img src="icons/icon-192x192.png" alt="icon" />
@@ -220,28 +204,16 @@
     <button id="dismissBtn" aria-label="Dismiss">×</button>
   </div>
 
-  <!-- Firebase SDK (v9 compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    // ─────────────────────────────────────────────────────────────
-    // 🔥 FIREBASE CONFIG
-    // Replace these values with your own from:
-    // console.firebase.google.com → Project Settings → Your Apps → Web
-    // ─────────────────────────────────────────────────────────────
-    const firebaseConfig = {
-      apiKey:            "REPLACE_WITH_YOUR_API_KEY",
-      authDomain:        "REPLACE_WITH_YOUR_AUTH_DOMAIN",
-      projectId:         "REPLACE_WITH_YOUR_PROJECT_ID",
-      storageBucket:     "REPLACE_WITH_YOUR_STORAGE_BUCKET",
-      messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
-      appId:             "REPLACE_WITH_YOUR_APP_ID"
-    };
+    // ── Supabase config ───────────────────────────────────────────
+    const SUPABASE_URL  = 'https://myvnwgjbwcurxgwchmxb.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15dm53Z2pid2N1cnhnd2NobXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTAyMjgsImV4cCI6MjA5NjU2NjIyOH0.gTnpMXeNYIe1GrwcUd0T-NSBgit9tv-0VX9F3cc8EKw';
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const txnCol = db.collection('transactions');
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON);
 
     // ── Language ──────────────────────────────────────────────────
     const strings = {
@@ -287,21 +259,21 @@
     });
 
     // ── Render ────────────────────────────────────────────────────
-    function renderAll(docs) {
-      // Balance
-      const total = docs.reduce((s, d) => d.type === 'add' ? s + d.amount : s - d.amount, 0);
+    function renderAll(rows) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+
+      const total = rows.reduce((s, t) => t.type === 'add' ? s + t.amount : s - t.amount, 0);
       document.getElementById('balanceAmount').textContent = '₹' + total.toLocaleString('en-IN');
 
-      // List (latest first — already ordered desc from Firestore)
       const list = document.getElementById('transactionList');
-      if (docs.length === 0) {
+      if (!rows.length) {
         list.innerHTML = `<div class="empty-state">${strings[lang].emptyState}</div>`;
         return;
       }
 
-      list.innerHTML = docs.map(t => {
-        const date = t.createdAt ? new Date(t.createdAt.toDate()).toLocaleString('en-IN', {
-          day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
+      list.innerHTML = rows.map(t => {
+        const date = t.created_at ? new Date(t.created_at).toLocaleString('en-IN', {
+          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
         }) : '';
         return `
           <div class="transaction-item">
@@ -310,25 +282,37 @@
               ${date ? `<span class="txn-meta">${date}</span>` : ''}
             </div>
             <span class="transaction-amount ${t.type === 'add' ? 'amount-add' : 'amount-remove'}">
-              ${t.type === 'add' ? '+' : '−'}₹${t.amount.toLocaleString('en-IN')}
+              ${t.type === 'add' ? '+' : '−'}₹${Number(t.amount).toLocaleString('en-IN')}
             </span>
           </div>`;
       }).join('');
     }
 
     function esc(s) {
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── Load transactions ─────────────────────────────────────────
+    async function loadTransactions() {
+      const { data, error } = await db
+        .from('transactions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        return;
+      }
+      renderAll(data || []);
     }
 
     // ── Real-time listener ────────────────────────────────────────
-    txnCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAll(docs);
-    }, err => {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      console.error(err);
-    });
+    db.channel('transactions-channel')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' }, () => {
+        loadTransactions();
+      })
+      .subscribe();
 
     // ── Add / Remove ──────────────────────────────────────────────
     async function handleTransaction(type) {
@@ -339,22 +323,17 @@
       if (!amountVal || amountVal <= 0) { alert(s.alertAmount); return; }
       if (!reason)                       { alert(s.alertReason); return; }
 
-      // Disable buttons while saving
       document.getElementById('addBtn').disabled    = true;
       document.getElementById('removeBtn').disabled = true;
 
-      try {
-        await txnCol.add({
-          type,
-          amount: amountVal,
-          reason,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+      const { error } = await db.from('transactions').insert({ type, amount: amountVal, reason });
+
+      if (error) {
+        alert('Error saving. Please try again.');
+        console.error(error);
+      } else {
         document.getElementById('amountInput').value = '';
         document.getElementById('reasonInput').value = '';
-      } catch(e) {
-        alert('Error saving. Check Firebase config.');
-        console.error(e);
       }
 
       document.getElementById('addBtn').disabled    = false;
@@ -363,25 +342,21 @@
 
     // ── Init ──────────────────────────────────────────────────────
     applyLang();
+    loadTransactions();
 
     // ── PWA ───────────────────────────────────────────────────────
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
     let deferredPrompt = null;
     const banner = document.getElementById('installBanner');
-
     window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      banner.classList.remove('hidden');
-      banner.style.display = 'flex';
+      e.preventDefault(); deferredPrompt = e;
+      banner.classList.remove('hidden'); banner.style.display = 'flex';
     });
     document.getElementById('installBtn').addEventListener('click', async () => {
       if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      banner.classList.add('hidden');
+      deferredPrompt.prompt(); await deferredPrompt.userChoice;
+      deferredPrompt = null; banner.classList.add('hidden');
     });
     document.getElementById('dismissBtn').addEventListener('click', () => banner.classList.add('hidden'));
     window.addEventListener('appinstalled', () => { banner.classList.add('hidden'); deferredPrompt = null; });
