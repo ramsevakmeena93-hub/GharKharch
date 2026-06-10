@@ -230,6 +230,36 @@
     }
     .input-card input:focus { border-color: var(--gold); background: #fff; }
 
+    /* ── Reason dropdown ── */
+    .reason-wrap { position: relative; margin-bottom: 10px; }
+    .reason-select {
+      width: 100%; padding: 12px 38px 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 0.93rem;
+      outline: none; color: var(--text);
+      background: var(--cream);
+      font-family: 'Inter', sans-serif;
+      appearance: none; -webkit-appearance: none;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .reason-select:focus { border-color: var(--gold); background: #fff; }
+    .reason-arrow {
+      position: absolute; right: 13px; top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none; color: var(--muted); font-size: 0.75rem;
+    }
+    .custom-reason {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--gold);
+      border-radius: 10px; font-size: 0.93rem;
+      margin-bottom: 10px; outline: none;
+      color: var(--text); background: #fff;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+      display: none;
+    }
+    .custom-reason.visible { display: block; }
+
     .btn-row { display: flex; gap: 10px; }
     .btn-add, .btn-remove {
       flex: 1; padding: 12px 8px;
@@ -404,7 +434,17 @@
     <div class="input-card">
       <div class="card-title" id="lblAdd">Add / Remove Money</div>
       <input type="number" id="amountInput" placeholder="Amount (₹)" min="0"/>
-      <input type="text"   id="reasonInput" placeholder="Reason"/>
+      <div class="reason-wrap">
+        <select class="reason-select" id="reasonSelect" onchange="onReasonChange()">
+          <option value="" disabled selected id="optPlaceholder">Select Reason</option>
+          <option value="Ghar Kharch"     id="opt1">🏠 Ghar Kharch</option>
+          <option value="Kisi Ko Diya"    id="opt2">🤝 Kisi Ko Diya</option>
+          <option value="Bag Mea Rakhe"   id="opt3">👜 Bag Mea Rakhe</option>
+          <option value="other"           id="opt4">✏️ Other (Custom)</option>
+        </select>
+        <span class="reason-arrow">▼</span>
+      </div>
+      <input type="text" class="custom-reason" id="reasonInput" placeholder="Type your reason"/>
       <div class="btn-row">
         <button class="btn-add"    id="addBtn"    onclick="handleTxn('add')">+ Add Money</button>
         <button class="btn-remove" id="removeBtn" onclick="handleTxn('remove')">− Remove</button>
@@ -452,23 +492,39 @@
         ghar:'Ghar Kharch', tijori:'Tijori',
         balance:'Total Balance', added:'Total Added', removed:'Total Removed',
         addSection:'Add / Remove Money',
-        amount:'Amount (₹)', reason:'Reason',
+        amount:'Amount (₹)', reason:'Select Reason',
+        reasonCustom:'Type your reason',
         addBtn:'+ Add Money', removeBtn:'− Remove',
         txns:'Transactions', empty:'No transactions yet.',
         live:'Live · shared with everyone', langBtn:'हिंदी',
         errAmt:'Please enter a valid amount.',
-        errReason:'Please enter a reason.',
+        errReason:'Please select or enter a reason.',
+        opt1:'🏠 Ghar Kharch',
+        opt2:'🤝 Kisi Ko Diya',
+        opt3:'👜 Bag Mea Rakhe',
+        opt4:'✏️ Other (Custom)',
+        opt1val:'Ghar Kharch',
+        opt2val:'Kisi Ko Diya',
+        opt3val:'Bag Mea Rakhe',
       },
       hi:{
         ghar:'घर खर्च', tijori:'तिजोरी',
         balance:'कुल बैलेंस', added:'जोड़ा गया', removed:'निकाला गया',
         addSection:'पैसे जोड़ें / निकालें',
-        amount:'राशि (₹)', reason:'कारण',
+        amount:'राशि (₹)', reason:'कारण चुनें',
+        reasonCustom:'अपना कारण लिखें',
         addBtn:'+ जोड़ें', removeBtn:'− निकालें',
         txns:'लेन-देन', empty:'अभी कोई लेन-देन नहीं।',
         live:'लाइव · सभी के लिए', langBtn:'English',
         errAmt:'कृपया सही राशि दर्ज करें।',
-        errReason:'कृपया कारण दर्ज करें।',
+        errReason:'कृपया कारण चुनें या लिखें।',
+        opt1:'🏠 घर खर्च',
+        opt2:'🤝 किसी को दिया',
+        opt3:'👜 बैग में रखे',
+        opt4:'✏️ अन्य (खुद लिखें)',
+        opt1val:'घर खर्च',
+        opt2val:'किसी को दिया',
+        opt3val:'बैग में रखे',
       }
     };
 
@@ -484,12 +540,38 @@
       document.getElementById('lblRemoved').textContent     = t('removed');
       document.getElementById('lblAdd').textContent         = t('addSection');
       document.getElementById('amountInput').placeholder    = t('amount');
-      document.getElementById('reasonInput').placeholder    = t('reason');
+      document.getElementById('reasonInput').placeholder    = t('reasonCustom');
       document.getElementById('addBtn').textContent         = t('addBtn');
       document.getElementById('removeBtn').textContent      = t('removeBtn');
       document.getElementById('lblTxns').textContent        = t('txns');
       document.getElementById('btnGhar').textContent        = '🏠 ' + t('ghar');
       document.getElementById('btnTijori').textContent      = '🏦 ' + t('tijori');
+
+      // Update dropdown option labels & values
+      const sel = document.getElementById('reasonSelect');
+      document.getElementById('optPlaceholder').textContent = t('reason');
+      document.getElementById('opt1').textContent = t('opt1');
+      document.getElementById('opt1').value       = t('opt1val');
+      document.getElementById('opt2').textContent = t('opt2');
+      document.getElementById('opt2').value       = t('opt2val');
+      document.getElementById('opt3').textContent = t('opt3');
+      document.getElementById('opt3').value       = t('opt3val');
+      document.getElementById('opt4').textContent = t('opt4');
+      sel.value = ''; // reset selection on language change
+      document.getElementById('reasonInput').classList.remove('visible');
+      document.getElementById('reasonInput').value = '';
+    }
+
+    function onReasonChange(){
+      const sel = document.getElementById('reasonSelect');
+      const custom = document.getElementById('reasonInput');
+      if(sel.value === 'other'){
+        custom.classList.add('visible');
+        custom.focus();
+      } else {
+        custom.classList.remove('visible');
+        custom.value = '';
+      }
     }
 
     document.getElementById('langBtn').addEventListener('click', () => {
@@ -582,8 +664,13 @@
     setInterval(async()=>{ await db.from('transactions').select('id').limit(1); }, 4*60*1000);
 
     async function handleTxn(type){
-      const amt    = parseFloat(document.getElementById('amountInput').value);
-      const reason = document.getElementById('reasonInput').value.trim();
+      const amt = parseFloat(document.getElementById('amountInput').value);
+      const sel = document.getElementById('reasonSelect');
+      const customInput = document.getElementById('reasonInput');
+      const reason = sel.value === 'other'
+        ? customInput.value.trim()
+        : sel.value;
+
       if(!amt||amt<=0){ alert(t('errAmt')); return; }
       if(!reason)      { alert(t('errReason')); return; }
 
@@ -601,7 +688,9 @@
         renderAll(cached);
       } else {
         document.getElementById('amountInput').value = '';
-        document.getElementById('reasonInput').value = '';
+        sel.value = '';
+        customInput.value = '';
+        customInput.classList.remove('visible');
         fetchAndRender();
       }
 
