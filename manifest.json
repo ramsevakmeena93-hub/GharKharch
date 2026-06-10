@@ -1,11 +1,11 @@
 {
-  "name": "Ghar Kharch - Money Tracker",
+  "name": "Ajay Meena — Money Tracker",
   "short_name": "Ghar Kharch",
-  "description": "Simple money tracker in Hindi & English",
+  "description": "Simple money tracker by Ajay Meena",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f0f4f8",
-  "theme_color": "#1a1a2e",
+  "background_color": "#faf7f2",
+  "theme_color": "#1a3a2a",
   "orientation": "portrait",
   "icons": [
     { "src": "icons/icon-72x72.png",   "sizes": "72x72",   "type": "image/png" },

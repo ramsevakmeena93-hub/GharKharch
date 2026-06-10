@@ -3,187 +3,411 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ghar Kharch</title>
+  <title>Ajay Meena — Money Tracker</title>
   <link rel="manifest" href="manifest.json"/>
-  <meta name="theme-color" content="#1a1a2e"/>
+  <meta name="theme-color" content="#1a3a2a"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Ghar Kharch"/>
   <link rel="apple-touch-icon" href="icons/icon-192x192.png"/>
   <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin/>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 60px;color:#333}
-    .container{width:100%;max-width:480px}
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --gold:    #c9a84c;
+      --gold2:   #f0d080;
+      --dark:    #1a3a2a;
+      --cream:   #faf7f2;
+      --card:    #ffffff;
+      --border:  #ede8df;
+      --text:    #2c2c2c;
+      --muted:   #9a9080;
+      --green:   #1e7d4b;
+      --red:     #c0392b;
+      --shadow:  0 4px 24px rgba(26,58,42,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text);
+    }
+
+    /* ── Top hero bar ── */
+    .hero {
+      width: 100%;
+      background: linear-gradient(135deg, #1a3a2a 0%, #0f2318 100%);
+      padding: 28px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -30px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.10);
+    }
+
+    .hero-top {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .app-brand img {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(201,168,76,0.4);
+    }
+    .app-brand-text { line-height: 1.2; }
+    .app-brand-text .app-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--gold2);
+      display: block;
+    }
+    .app-brand-text .app-sub {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    #langBtn {
+      background: rgba(201,168,76,0.15);
+      color: var(--gold2);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    #langBtn:hover { background: rgba(201,168,76,0.25); }
+
+    /* Balance display */
+    .balance-wrap {
+      text-align: center;
+      margin-top: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .balance-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .balance-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.01em;
+      line-height: 1;
+    }
+    .balance-amount span { color: var(--gold); }
+
+    /* Live badge */
+    .live-badge {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.68rem; color: rgba(255,255,255,0.45);
+      margin-top: 4px;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80; animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     /* ── Section switcher ── */
-    .switcher{display:flex;background:#e2e8f0;border-radius:14px;padding:4px;margin-bottom:20px;gap:4px}
-    .switcher button{flex:1;padding:10px;border:none;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;background:transparent;color:#666;transition:all 0.2s}
-    .switcher button.active{background:#1a1a2e;color:#fff;box-shadow:0 2px 8px rgba(26,26,46,0.2)}
+    .switcher-wrap {
+      width: 100%; max-width: 480px;
+      padding: 0 16px;
+      margin-top: -18px;
+      position: relative;
+      z-index: 10;
+    }
+    .switcher {
+      display: flex;
+      background: #fff;
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+      box-shadow: 0 4px 20px rgba(26,58,42,0.12);
+      border: 1px solid var(--border);
+    }
+    .switcher button {
+      flex: 1; padding: 10px 8px;
+      border: none; border-radius: 10px;
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; background: transparent;
+      color: var(--muted); transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .switcher button.active {
+      background: linear-gradient(135deg, #1a3a2a, #0f2318);
+      color: var(--gold2);
+      box-shadow: 0 2px 10px rgba(26,58,42,0.25);
+    }
 
-    /* ── Header ── */
-    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-    .header h1{font-size:1.3rem;font-weight:700;color:#1a1a2e}
-    #langBtn{background:#1a1a2e;color:#fff;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:0.82rem}
+    /* ── Main content ── */
+    .main { width: 100%; max-width: 480px; padding: 20px 16px 70px; }
 
-    /* ── Live badge ── */
-    .live-badge{display:flex;align-items:center;gap:6px;font-size:0.72rem;color:#22c55e;font-weight:600;margin-bottom:14px;justify-content:flex-end}
-    .live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 1.5s infinite}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    /* ── Summary row ── */
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .sum-card {
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .sum-card .sum-icon { font-size: 1.1rem; margin-bottom: 6px; }
+    .sum-card .sum-label {
+      font-size: 0.68rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px;
+    }
+    .sum-card .sum-val { font-size: 1.15rem; font-weight: 700; }
+    .sum-add  .sum-val { color: var(--green); }
+    .sum-remove .sum-val { color: var(--red); }
 
-    /* ── Summary cards ── */
-    .summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
-    .sum-card{border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
-    .sum-card .sum-label{font-size:0.68rem;opacity:0.75;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
-    .sum-card .sum-val{font-size:1.15rem;font-weight:700}
-    .card-total{background:#1a1a2e;color:#fff}
-    .card-add{background:#dcfce7;color:#15803d}
-    .card-remove{background:#fee2e2;color:#b91c1c}
+    /* ── Input card ── */
+    .input-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .input-card .card-title {
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 14px;
+    }
+    .input-card input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 0.93rem;
+      margin-bottom: 10px; outline: none;
+      color: var(--text); background: var(--cream);
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+    }
+    .input-card input:focus { border-color: var(--gold); background: #fff; }
 
-    /* ── Notes section ── */
-    .notes-section{background:#fff;border-radius:16px;padding:16px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07)}
-    .notes-section .sec-title{font-size:0.75rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px}
-    .notes-grid{display:flex;flex-direction:column;gap:10px}
-    .note-row{display:flex;align-items:center;justify-content:space-between}
-    .note-badge{width:48px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;color:#fff;flex-shrink:0}
-    .b100{background:#f59e0b}.b200{background:#3b82f6}.b500{background:#8b5cf6}
-    .note-sub{font-size:0.8rem;color:#999;min-width:60px}
-    .note-ctrl{display:flex;align-items:center;gap:6px}
-    .cbtn{width:28px;height:28px;border:none;border-radius:7px;background:#f0f4f8;font-size:1.1rem;cursor:pointer;font-weight:700;color:#1a1a2e;display:flex;align-items:center;justify-content:center}
-    .cbtn:active{transform:scale(0.9)}
-    .ninput{width:46px;text-align:center;border:1.5px solid #e2e8f0;border-radius:7px;padding:5px 2px;font-size:0.95rem;font-weight:600;color:#1a1a2e;outline:none;-moz-appearance:textfield}
-    .ninput::-webkit-inner-spin-button,.ninput::-webkit-outer-spin-button{-webkit-appearance:none}
-    .ninput:focus{border-color:#1a1a2e}
-    .notes-total{margin-top:12px;padding-top:12px;border-top:1px solid #f0f4f8;display:flex;justify-content:space-between;align-items:center}
-    .notes-total span{font-size:0.82rem;color:#888}
-    .notes-total strong{font-size:1.1rem;color:#1a1a2e;font-weight:700}
-
-    /* ── Input section ── */
-    .input-section{background:#fff;border-radius:16px;padding:16px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07)}
-    .input-section input{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.92rem;margin-bottom:10px;outline:none;color:#333;transition:border-color 0.2s}
-    .input-section input:focus{border-color:#1a1a2e}
-    .btn-row{display:flex;gap:10px}
-    .btn-add,.btn-remove{flex:1;padding:11px;border:none;border-radius:10px;font-size:0.92rem;font-weight:600;cursor:pointer;transition:opacity 0.2s,transform 0.1s}
-    .btn-add:active,.btn-remove:active{transform:scale(0.97)}
-    .btn-add{background:#22c55e;color:#fff}
-    .btn-remove{background:#ef4444;color:#fff}
-    .btn-add:disabled,.btn-remove:disabled{opacity:0.5;cursor:not-allowed}
+    .btn-row { display: flex; gap: 10px; }
+    .btn-add, .btn-remove {
+      flex: 1; padding: 12px 8px;
+      border: none; border-radius: 11px;
+      font-size: 0.88rem; font-weight: 700;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: opacity 0.18s, transform 0.12s;
+      letter-spacing: 0.02em;
+    }
+    .btn-add:active, .btn-remove:active { transform: scale(0.97); }
+    .btn-add {
+      background: linear-gradient(135deg, #1e7d4b, #145c36);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(30,125,75,0.3);
+    }
+    .btn-remove {
+      background: linear-gradient(135deg, #c0392b, #962d22);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(192,57,43,0.28);
+    }
+    .btn-add:hover, .btn-remove:hover { opacity: 0.88; }
+    .btn-add:disabled, .btn-remove:disabled { opacity: 0.45; cursor: not-allowed; }
 
     /* ── Transactions ── */
-    .txn-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .txn-header h2{font-size:0.82rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em}
-    .txn-list{display:flex;flex-direction:column;gap:8px}
-    .txn-item{background:#fff;border-radius:12px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:0 1px 6px rgba(0,0,0,0.06);gap:10px}
-    .txn-left{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
-    .txn-reason{font-size:0.9rem;color:#444}
-    .txn-date{font-size:0.72rem;color:#bbb}
-    .txn-amount{font-size:0.98rem;font-weight:700;white-space:nowrap}
-    .amt-add{color:#16a34a}.amt-remove{color:#dc2626}
-    .empty{text-align:center;color:#ccc;font-size:0.88rem;padding:28px 0}
+    .txn-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 12px;
+    }
+    .txn-header h2 {
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .txn-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .txn-item {
+      background: var(--card);
+      border-radius: 14px; padding: 14px 16px;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 12px;
+      box-shadow: 0 1px 8px rgba(26,58,42,0.06);
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s;
+    }
+    .txn-item:hover { box-shadow: 0 4px 16px rgba(26,58,42,0.10); }
+
+    .txn-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-top: 5px; flex-shrink: 0;
+    }
+    .dot-add    { background: var(--green); }
+    .dot-remove { background: var(--red); }
+
+    .txn-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+    .txn-reason { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+    .txn-date   { font-size: 0.7rem; color: var(--muted); }
+
+    .txn-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .txn-amount { font-size: 1rem; font-weight: 700; white-space: nowrap; }
+    .amt-add    { color: var(--green); }
+    .amt-remove { color: var(--red); }
+
+    .empty {
+      text-align: center; padding: 36px 0;
+      color: var(--muted); font-size: 0.88rem;
+    }
+    .empty-icon { font-size: 2.2rem; margin-bottom: 8px; opacity: 0.4; }
 
     /* ── Top loading bar ── */
-    #topbar{position:fixed;top:0;left:0;right:0;height:3px;background:#e2e8f0;z-index:9999;transition:opacity 0.4s}
-    #topbar.hidden{opacity:0;pointer-events:none}
-    .topbar-fill{height:100%;width:40%;background:linear-gradient(90deg,#1a1a2e,#22c55e);border-radius:2px;animation:slide 1.2s ease-in-out infinite}
-    @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+    #topbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; z-index: 9999; transition: opacity 0.4s;
+    }
+    #topbar.hidden { opacity: 0; pointer-events: none; }
+    .topbar-fill {
+      height: 100%; width: 45%;
+      background: linear-gradient(90deg, var(--dark), var(--gold));
+      border-radius: 2px;
+      animation: slide 1.3s ease-in-out infinite;
+    }
+    @keyframes slide { 0%{transform:translateX(-120%)} 100%{transform:translateX(320%)} }
 
     /* ── Footer ── */
-    .footer{text-align:center;font-size:0.72rem;color:#bbb;margin-top:24px;padding-bottom:10px}
+    .footer {
+      text-align: center; font-size: 0.7rem;
+      color: var(--muted); margin-top: 28px; padding-bottom: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .footer::before, .footer::after {
+      content: '—'; opacity: 0.35;
+    }
 
     /* ── Install Banner ── */
-    #installBanner{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:460px;background:#1a1a2e;color:#fff;border-radius:16px;padding:14px 18px;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,0.25);z-index:998}
-    #installBanner.hidden{display:none!important}
-    .inst-left{display:flex;align-items:center;gap:12px}
-    .inst-left img{width:38px;height:38px;border-radius:9px}
-    .inst-text{font-size:0.85rem;line-height:1.4}
-    .inst-text strong{display:block;font-size:0.92rem}
-    #installBtn{background:#22c55e;color:#fff;border:none;padding:8px 16px;border-radius:9px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
-    #dismissBtn{background:none;border:none;color:rgba(255,255,255,0.45);font-size:1.3rem;cursor:pointer;flex-shrink:0}
+    #installBanner {
+      display: none; position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%); width: calc(100% - 32px); max-width: 460px;
+      background: linear-gradient(135deg, #1a3a2a, #0f2318);
+      color: #fff; border-radius: 16px; padding: 14px 18px;
+      align-items: center; justify-content: space-between; gap: 12px;
+      box-shadow: 0 8px 32px rgba(26,58,42,0.35);
+      border: 1px solid rgba(201,168,76,0.2); z-index: 998;
+    }
+    #installBanner.hidden { display: none !important; }
+    .inst-left { display: flex; align-items: center; gap: 12px; }
+    .inst-left img { width: 38px; height: 38px; border-radius: 9px; }
+    .inst-text { font-size: 0.83rem; line-height: 1.4; }
+    .inst-text strong { display: block; font-size: 0.9rem; color: var(--gold2); }
+    #installBtn {
+      background: linear-gradient(135deg, var(--gold), #a8892e);
+      color: #1a1a1a; border: none; padding: 8px 16px;
+      border-radius: 9px; font-size: 0.83rem; font-weight: 700;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    #dismissBtn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.35); font-size: 1.3rem; cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
   <div id="topbar"><div class="topbar-fill"></div></div>
 
-  <div class="container">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-top">
+      <div class="app-brand">
+        <img src="icons/icon-192x192.png" alt="logo"/>
+        <div class="app-brand-text">
+          <span class="app-name" id="appName">Ghar Kharch</span>
+          <span class="app-sub">Money Tracker</span>
+        </div>
+      </div>
+      <button id="langBtn">हिंदी</button>
+    </div>
 
-    <!-- Section switcher -->
+    <div class="balance-wrap">
+      <div class="balance-label" id="lblBalance">Total Balance</div>
+      <div class="balance-amount"><span>₹</span><span id="valBalance">0</span></div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        <span id="liveLabel">Live · shared with everyone</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section switcher -->
+  <div class="switcher-wrap">
     <div class="switcher">
       <button id="btnGhar" class="active" onclick="switchSection('ghar')">🏠 Ghar Kharch</button>
       <button id="btnTijori" onclick="switchSection('tijori')">🏦 Tijori</button>
     </div>
+  </div>
 
-    <!-- Header -->
-    <div class="header">
-      <h1 id="appTitle">Ghar Kharch</h1>
-      <button id="langBtn">हिंदी</button>
-    </div>
-
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      <span id="liveLabel">Live – shared with everyone</span>
-    </div>
+  <!-- Main -->
+  <div class="main">
 
     <!-- Summary -->
-    <div class="summary-grid">
-      <div class="sum-card card-total">
-        <div class="sum-label" id="lblTotal">Total</div>
-        <div class="sum-val" id="valTotal">₹0</div>
-      </div>
-      <div class="sum-card card-add">
-        <div class="sum-label" id="lblAdded">Added</div>
+    <div class="summary-row">
+      <div class="sum-card sum-add">
+        <div class="sum-icon">💚</div>
+        <div class="sum-label" id="lblAdded">Total Added</div>
         <div class="sum-val" id="valAdded">₹0</div>
       </div>
-      <div class="sum-card card-remove">
-        <div class="sum-label" id="lblRemoved">Removed</div>
+      <div class="sum-card sum-remove">
+        <div class="sum-icon">❤️</div>
+        <div class="sum-label" id="lblRemoved">Total Removed</div>
         <div class="sum-val" id="valRemoved">₹0</div>
       </div>
     </div>
 
-    <!-- Notes calculator -->
-    <div class="notes-section">
-      <div class="sec-title" id="lblNotes">Count Notes</div>
-      <div class="notes-grid">
-        <div class="note-row">
-          <div class="note-badge b100">₹100</div>
-          <div class="note-sub" id="sub100">₹0</div>
-          <div class="note-ctrl">
-            <button class="cbtn" onclick="adj('n100',-1)">−</button>
-            <input class="ninput" type="number" id="n100" value="0" min="0" oninput="calcNotes()"/>
-            <button class="cbtn" onclick="adj('n100',1)">+</button>
-          </div>
-        </div>
-        <div class="note-row">
-          <div class="note-badge b200">₹200</div>
-          <div class="note-sub" id="sub200">₹0</div>
-          <div class="note-ctrl">
-            <button class="cbtn" onclick="adj('n200',-1)">−</button>
-            <input class="ninput" type="number" id="n200" value="0" min="0" oninput="calcNotes()"/>
-            <button class="cbtn" onclick="adj('n200',1)">+</button>
-          </div>
-        </div>
-        <div class="note-row">
-          <div class="note-badge b500">₹500</div>
-          <div class="note-sub" id="sub500">₹0</div>
-          <div class="note-ctrl">
-            <button class="cbtn" onclick="adj('n500',-1)">−</button>
-            <input class="ninput" type="number" id="n500" value="0" min="0" oninput="calcNotes()"/>
-            <button class="cbtn" onclick="adj('n500',1)">+</button>
-          </div>
-        </div>
-      </div>
-      <div class="notes-total">
-        <span id="lblNotesTotal">Notes Total</span>
-        <strong id="notesTotal">₹0</strong>
-      </div>
-    </div>
-
-    <!-- Add/Remove -->
-    <div class="input-section">
+    <!-- Add / Remove -->
+    <div class="input-card">
+      <div class="card-title" id="lblAdd">Add / Remove Money</div>
       <input type="number" id="amountInput" placeholder="Amount (₹)" min="0"/>
       <input type="text"   id="reasonInput" placeholder="Reason"/>
       <div class="btn-row">
         <button class="btn-add"    id="addBtn"    onclick="handleTxn('add')">+ Add Money</button>
-        <button class="btn-remove" id="removeBtn" onclick="handleTxn('remove')">− Remove Money</button>
+        <button class="btn-remove" id="removeBtn" onclick="handleTxn('remove')">− Remove</button>
       </div>
     </div>
 
@@ -192,7 +416,10 @@
       <h2 id="lblTxns">Transactions</h2>
     </div>
     <div class="txn-list" id="txnList">
-      <div class="empty" id="emptyMsg">No transactions yet.</div>
+      <div class="empty">
+        <div class="empty-icon">💳</div>
+        No transactions yet.
+      </div>
     </div>
 
     <div class="footer">Developed by Ajay Meena</div>
@@ -202,7 +429,10 @@
   <div id="installBanner" class="hidden">
     <div class="inst-left">
       <img src="icons/icon-192x192.png" alt="icon"/>
-      <div class="inst-text"><strong>Ghar Kharch</strong>Install on your phone</div>
+      <div class="inst-text">
+        <strong>Ghar Kharch</strong>
+        Install on your phone
+      </div>
     </div>
     <button id="installBtn">Install</button>
     <button id="dismissBtn">×</button>
@@ -210,38 +440,33 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    // ── Supabase ──────────────────────────────────────────────────
     const SURL = 'https://myvnwgjbwcurxgwchmxb.supabase.co';
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15dm53Z2pid2N1cnhnd2NobXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTAyMjgsImV4cCI6MjA5NjU2NjIyOH0.gTnpMXeNYIe1GrwcUd0T-NSBgit9tv-0VX9F3cc8EKw';
     const db = supabase.createClient(SURL, SKEY);
 
-    // ── State ─────────────────────────────────────────────────────
-    let section = localStorage.getItem('section') || 'ghar'; // 'ghar' | 'tijori'
+    let section = localStorage.getItem('section') || 'ghar';
     let lang    = localStorage.getItem('lang')    || 'en';
 
-    // ── Language strings ──────────────────────────────────────────
     const S = {
-      en: {
+      en:{
         ghar:'Ghar Kharch', tijori:'Tijori',
-        total:'Total', added:'Added', removed:'Removed',
-        notes:'Count Notes', notesTotal:'Notes Total',
+        balance:'Total Balance', added:'Total Added', removed:'Total Removed',
+        addSection:'Add / Remove Money',
         amount:'Amount (₹)', reason:'Reason',
-        addBtn:'+ Add Money', removeBtn:'− Remove Money',
+        addBtn:'+ Add Money', removeBtn:'− Remove',
         txns:'Transactions', empty:'No transactions yet.',
-        live:'Live – shared with everyone',
-        langBtn:'हिंदी',
+        live:'Live · shared with everyone', langBtn:'हिंदी',
         errAmt:'Please enter a valid amount.',
         errReason:'Please enter a reason.',
       },
-      hi: {
+      hi:{
         ghar:'घर खर्च', tijori:'तिजोरी',
-        total:'कुल', added:'जोड़ा', removed:'निकाला',
-        notes:'नोट गिनें', notesTotal:'नोट कुल',
+        balance:'कुल बैलेंस', added:'जोड़ा गया', removed:'निकाला गया',
+        addSection:'पैसे जोड़ें / निकालें',
         amount:'राशि (₹)', reason:'कारण',
-        addBtn:'+ पैसे जोड़ें', removeBtn:'− पैसे निकालें',
+        addBtn:'+ जोड़ें', removeBtn:'− निकालें',
         txns:'लेन-देन', empty:'अभी कोई लेन-देन नहीं।',
-        live:'लाइव – सभी के लिए',
-        langBtn:'English',
+        live:'लाइव · सभी के लिए', langBtn:'English',
         errAmt:'कृपया सही राशि दर्ज करें।',
         errReason:'कृपया कारण दर्ज करें।',
       }
@@ -250,21 +475,21 @@
     function t(k){ return S[lang][k]; }
 
     function applyLang(){
-      document.getElementById('appTitle').textContent  = section === 'ghar' ? t('ghar') : t('tijori');
-      document.getElementById('langBtn').textContent   = t('langBtn');
-      document.getElementById('liveLabel').textContent = t('live');
-      document.getElementById('lblTotal').textContent  = t('total');
-      document.getElementById('lblAdded').textContent  = t('added');
-      document.getElementById('lblRemoved').textContent= t('removed');
-      document.getElementById('lblNotes').textContent  = t('notes');
-      document.getElementById('lblNotesTotal').textContent = t('notesTotal');
-      document.getElementById('amountInput').placeholder  = t('amount');
-      document.getElementById('reasonInput').placeholder  = t('reason');
-      document.getElementById('addBtn').textContent    = t('addBtn');
-      document.getElementById('removeBtn').textContent = t('removeBtn');
-      document.getElementById('lblTxns').textContent   = t('txns');
-      document.getElementById('btnGhar').textContent   = '🏠 ' + t('ghar');
-      document.getElementById('btnTijori').textContent = '🏦 ' + t('tijori');
+      const sec = section === 'ghar' ? t('ghar') : t('tijori');
+      document.getElementById('appName').textContent        = sec;
+      document.getElementById('langBtn').textContent        = t('langBtn');
+      document.getElementById('lblBalance').textContent     = t('balance');
+      document.getElementById('liveLabel').textContent      = t('live');
+      document.getElementById('lblAdded').textContent       = t('added');
+      document.getElementById('lblRemoved').textContent     = t('removed');
+      document.getElementById('lblAdd').textContent         = t('addSection');
+      document.getElementById('amountInput').placeholder    = t('amount');
+      document.getElementById('reasonInput').placeholder    = t('reason');
+      document.getElementById('addBtn').textContent         = t('addBtn');
+      document.getElementById('removeBtn').textContent      = t('removeBtn');
+      document.getElementById('lblTxns').textContent        = t('txns');
+      document.getElementById('btnGhar').textContent        = '🏠 ' + t('ghar');
+      document.getElementById('btnTijori').textContent      = '🏦 ' + t('tijori');
     }
 
     document.getElementById('langBtn').addEventListener('click', () => {
@@ -273,67 +498,53 @@
       applyLang();
     });
 
-    // ── Section switch ────────────────────────────────────────────
     function switchSection(s){
       section = s;
       localStorage.setItem('section', s);
-      document.getElementById('btnGhar').classList.toggle('active',   s === 'ghar');
-      document.getElementById('btnTijori').classList.toggle('active', s === 'tijori');
+      document.getElementById('btnGhar').classList.toggle('active',   s==='ghar');
+      document.getElementById('btnTijori').classList.toggle('active', s==='tijori');
       applyLang();
       loadData();
     }
 
-    // ── Notes calculator ──────────────────────────────────────────
-    function nv(id){ return Math.max(0, parseInt(document.getElementById(id).value)||0); }
-    function adj(id, d){
-      const el = document.getElementById(id);
-      el.value = Math.max(0,(parseInt(el.value)||0)+d);
-      calcNotes();
-    }
-    function calcNotes(){
-      const v100=nv('n100'), v200=nv('n200'), v500=nv('n500');
-      document.getElementById('sub100').textContent = '₹'+(v100*100).toLocaleString('en-IN');
-      document.getElementById('sub200').textContent = '₹'+(v200*200).toLocaleString('en-IN');
-      document.getElementById('sub500').textContent = '₹'+(v500*500).toLocaleString('en-IN');
-      const tot = v100*100 + v200*200 + v500*500;
-      document.getElementById('notesTotal').textContent = '₹'+tot.toLocaleString('en-IN');
-    }
-
-    // ── Top bar ───────────────────────────────────────────────────
     function showBar(){ document.getElementById('topbar').classList.remove('hidden'); }
     function hideBar(){
       const b = document.getElementById('topbar');
       b.classList.add('hidden');
-      setTimeout(()=>b.style.display='none', 400);
+      setTimeout(()=> b.style.display='none', 450);
     }
 
-    // ── Render ────────────────────────────────────────────────────
     function renderAll(rows){
       hideBar();
-      const totalAdded   = rows.filter(r=>r.type==='add').reduce((s,r)=>s+Number(r.amount),0);
-      const totalRemoved = rows.filter(r=>r.type==='remove').reduce((s,r)=>s+Number(r.amount),0);
-      const net          = totalAdded - totalRemoved;
+      const added   = rows.filter(r=>r.type==='add').reduce((s,r)=>s+Number(r.amount),0);
+      const removed = rows.filter(r=>r.type==='remove').reduce((s,r)=>s+Number(r.amount),0);
+      const net     = added - removed;
 
-      document.getElementById('valTotal').textContent   = '₹'+net.toLocaleString('en-IN');
-      document.getElementById('valAdded').textContent   = '₹'+totalAdded.toLocaleString('en-IN');
-      document.getElementById('valRemoved').textContent = '₹'+totalRemoved.toLocaleString('en-IN');
+      document.getElementById('valBalance').textContent = net.toLocaleString('en-IN');
+      document.getElementById('valAdded').textContent   = '₹'+added.toLocaleString('en-IN');
+      document.getElementById('valRemoved').textContent = '₹'+removed.toLocaleString('en-IN');
 
       const list = document.getElementById('txnList');
       if(!rows.length){
-        list.innerHTML = `<div class="empty">${t('empty')}</div>`;
+        list.innerHTML = `<div class="empty"><div class="empty-icon">💳</div>${t('empty')}</div>`;
         return;
       }
+
       list.innerHTML = rows.map(r=>{
         const d = r.created_at ? new Date(r.created_at) : null;
         const dateStr = d ? d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+        const isAdd = r.type==='add';
         return `<div class="txn-item">
+          <div class="txn-dot ${isAdd?'dot-add':'dot-remove'}"></div>
           <div class="txn-left">
             <span class="txn-reason">${esc(r.reason)}</span>
             ${dateStr?`<span class="txn-date">${dateStr}</span>`:''}
           </div>
-          <span class="txn-amount ${r.type==='add'?'amt-add':'amt-remove'}">
-            ${r.type==='add'?'+':'−'}₹${Number(r.amount).toLocaleString('en-IN')}
-          </span>
+          <div class="txn-right">
+            <span class="txn-amount ${isAdd?'amt-add':'amt-remove'}">
+              ${isAdd?'+':'−'}₹${Number(r.amount).toLocaleString('en-IN')}
+            </span>
+          </div>
         </div>`;
       }).join('');
 
@@ -342,25 +553,22 @@
 
     function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-    // ── Fetch ─────────────────────────────────────────────────────
     async function fetchAndRender(){
       try{
-        const tbl = section === 'ghar' ? 'transactions' : 'tijori';
+        const tbl = section==='ghar' ? 'transactions' : 'tijori';
         const {data,error} = await db.from(tbl).select('*').order('created_at',{ascending:false});
         if(!error && data) renderAll(data);
-      } catch(e){ console.error(e); }
+      }catch(e){ console.error(e); }
       finally{ hideBar(); }
     }
 
     function loadData(){
       showBar();
-      // instant cache
       const cached = localStorage.getItem('cache_'+section);
       if(cached){ try{ renderAll(JSON.parse(cached)); }catch(e){} }
       fetchAndRender();
     }
 
-    // ── Real-time ─────────────────────────────────────────────────
     function setupRealtime(){
       db.channel('ghar-live')
         .on('postgres_changes',{event:'*',schema:'public',table:'transactions'},()=>{ if(section==='ghar') fetchAndRender(); })
@@ -370,15 +578,9 @@
         .subscribe();
     }
 
-    // ── Polling fallback every 15s ────────────────────────────────
     setInterval(fetchAndRender, 15000);
+    setInterval(async()=>{ await db.from('transactions').select('id').limit(1); }, 4*60*1000);
 
-    // ── Keep Supabase awake (ping every 4 min) ────────────────────
-    setInterval(async () => {
-      await db.from('transactions').select('id').limit(1);
-    }, 4 * 60 * 1000);
-
-    // ── Add / Remove ──────────────────────────────────────────────
     async function handleTxn(type){
       const amt    = parseFloat(document.getElementById('amountInput').value);
       const reason = document.getElementById('reasonInput').value.trim();
@@ -388,13 +590,11 @@
       document.getElementById('addBtn').disabled    = true;
       document.getElementById('removeBtn').disabled = true;
 
-      // Optimistic
       const cached = JSON.parse(localStorage.getItem('cache_'+section)||'[]');
-      const opt = {id:'tmp-'+Date.now(), type, amount:amt, reason, created_at:new Date().toISOString()};
-      renderAll([opt,...cached]);
+      renderAll([{id:'tmp-'+Date.now(),type,amount:amt,reason,created_at:new Date().toISOString()},...cached]);
 
-      const tbl = section === 'ghar' ? 'transactions' : 'tijori';
-      const {error} = await db.from(tbl).insert({type, amount:amt, reason});
+      const tbl = section==='ghar' ? 'transactions' : 'tijori';
+      const {error} = await db.from(tbl).insert({type,amount:amt,reason});
 
       if(error){
         alert('Error saving. Try again.'); console.error(error);
@@ -409,23 +609,15 @@
       document.getElementById('removeBtn').disabled = false;
     }
 
-    // ── Init ──────────────────────────────────────────────────────
     applyLang();
-    calcNotes();
     switchSection(section);
     setupRealtime();
 
-    // ── PWA ───────────────────────────────────────────────────────
     if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
     let dp = null;
     const banner = document.getElementById('installBanner');
-    window.addEventListener('beforeinstallprompt', e=>{
-      e.preventDefault(); dp=e;
-      banner.classList.remove('hidden'); banner.style.display='flex';
-    });
-    document.getElementById('installBtn').addEventListener('click', async()=>{
-      if(!dp) return; dp.prompt(); await dp.userChoice; dp=null; banner.classList.add('hidden');
-    });
+    window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); dp=e; banner.classList.remove('hidden'); banner.style.display='flex'; });
+    document.getElementById('installBtn').addEventListener('click', async()=>{ if(!dp)return; dp.prompt(); await dp.userChoice; dp=null; banner.classList.add('hidden'); });
     document.getElementById('dismissBtn').addEventListener('click',()=>banner.classList.add('hidden'));
     window.addEventListener('appinstalled',()=>{ banner.classList.add('hidden'); dp=null; });
   </script>
