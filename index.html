@@ -373,6 +373,11 @@
     // ── Polling fallback every 15s ────────────────────────────────
     setInterval(fetchAndRender, 15000);
 
+    // ── Keep Supabase awake (ping every 4 min) ────────────────────
+    setInterval(async () => {
+      await db.from('transactions').select('id').limit(1);
+    }, 4 * 60 * 1000);
+
     // ── Add / Remove ──────────────────────────────────────────────
     async function handleTxn(type){
       const amt    = parseFloat(document.getElementById('amountInput').value);
