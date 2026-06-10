@@ -1,4 +1,4 @@
-const CACHE = 'gharkharch-v1';
+const CACHE = 'gharkharch-v3';
 const ASSETS = [
   './',
   './index.html',
