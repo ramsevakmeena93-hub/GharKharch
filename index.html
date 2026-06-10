@@ -437,10 +437,10 @@
       <div class="reason-wrap">
         <select class="reason-select" id="reasonSelect" onchange="onReasonChange()">
           <option value="" disabled selected id="optPlaceholder">Select Reason</option>
-          <option value="Ghar Kharch"     id="opt1">🏠 Ghar Kharch</option>
-          <option value="Kisi Ko Diya"    id="opt2">🤝 Kisi Ko Diya</option>
-          <option value="Bag Mea Rakhe"   id="opt3">👜 Bag Mea Rakhe</option>
-          <option value="other"           id="opt4">✏️ Other (Custom)</option>
+          <option value="opt1" id="opt1">🏠 Ghar Kharch</option>
+          <option value="opt2" id="opt2">🤝 Kisi Ko Diya</option>
+          <option value="opt3" id="opt3">👜 Bag Mea Rakhe</option>
+          <option value="other" id="opt4">✏️ Other (Custom)</option>
         </select>
         <span class="reason-arrow">▼</span>
       </div>
@@ -505,8 +505,7 @@
         opt4:'✏️ Other (Custom)',
         opt1val:'Ghar Kharch',
         opt2val:'Kisi Ko Diya',
-        opt3val:'Bag Mea Rakhe',
-      },
+        opt3val:'Bag Mea Rakhe',      },
       hi:{
         ghar:'घर खर्च', tijori:'तिजोरी',
         balance:'कुल बैलेंस', added:'जोड़ा गया', removed:'निकाला गया',
@@ -524,8 +523,7 @@
         opt4:'✏️ अन्य (खुद लिखें)',
         opt1val:'घर खर्च',
         opt2val:'किसी को दिया',
-        opt3val:'बैग में रखे',
-      }
+        opt3val:'बैग में रखे',      }
     };
 
     function t(k){ return S[lang][k]; }
@@ -547,17 +545,14 @@
       document.getElementById('btnGhar').textContent        = '🏠 ' + t('ghar');
       document.getElementById('btnTijori').textContent      = '🏦 ' + t('tijori');
 
-      // Update dropdown option labels & values
-      const sel = document.getElementById('reasonSelect');
+      // Update dropdown option labels only — keep values as fixed English keys
       document.getElementById('optPlaceholder').textContent = t('reason');
       document.getElementById('opt1').textContent = t('opt1');
-      document.getElementById('opt1').value       = t('opt1val');
       document.getElementById('opt2').textContent = t('opt2');
-      document.getElementById('opt2').value       = t('opt2val');
       document.getElementById('opt3').textContent = t('opt3');
-      document.getElementById('opt3').value       = t('opt3val');
       document.getElementById('opt4').textContent = t('opt4');
-      sel.value = ''; // reset selection on language change
+      // Reset dropdown and custom input on language change
+      document.getElementById('reasonSelect').value = '';
       document.getElementById('reasonInput').classList.remove('visible');
       document.getElementById('reasonInput').value = '';
     }
@@ -667,9 +662,19 @@
       const amt = parseFloat(document.getElementById('amountInput').value);
       const sel = document.getElementById('reasonSelect');
       const customInput = document.getElementById('reasonInput');
+
+      // Map fixed option values to current language labels
+      const labelMap = {
+        'opt1': t('opt1val'),
+        'opt2': t('opt2val'),
+        'opt3': t('opt3val'),
+      };
       const reason = sel.value === 'other'
         ? customInput.value.trim()
-        : sel.value;
+        : sel.value === 'opt1' ? labelMap['opt1']
+        : sel.value === 'opt2' ? labelMap['opt2']
+        : sel.value === 'opt3' ? labelMap['opt3']
+        : '';
 
       if(!amt||amt<=0){ alert(t('errAmt')); return; }
       if(!reason)      { alert(t('errReason')); return; }
