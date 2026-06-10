@@ -1,172 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ghar Kharch</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#1a1a2e" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Ghar Kharch" />
-  <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
-  <!-- Preload Supabase SDK so it's fetched in parallel with HTML parsing -->
-  <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin />
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#1a1a2e"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Ghar Kharch"/>
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png"/>
+  <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 60px;color:#333}
+    .container{width:100%;max-width:480px}
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 16px;
-      color: #333;
-    }
+    /* ── Section switcher ── */
+    .switcher{display:flex;background:#e2e8f0;border-radius:14px;padding:4px;margin-bottom:20px;gap:4px}
+    .switcher button{flex:1;padding:10px;border:none;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;background:transparent;color:#666;transition:all 0.2s}
+    .switcher button.active{background:#1a1a2e;color:#fff;box-shadow:0 2px 8px rgba(26,26,46,0.2)}
 
-    .container { width: 100%; max-width: 480px; }
+    /* ── Header ── */
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .header h1{font-size:1.3rem;font-weight:700;color:#1a1a2e}
+    #langBtn{background:#1a1a2e;color:#fff;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:0.82rem}
 
-    .header {
-      display: flex; justify-content: space-between;
-      align-items: center; margin-bottom: 16px;
-    }
-    .header h1 { font-size: 1.4rem; font-weight: 700; color: #1a1a2e; }
+    /* ── Live badge ── */
+    .live-badge{display:flex;align-items:center;gap:6px;font-size:0.72rem;color:#22c55e;font-weight:600;margin-bottom:14px;justify-content:flex-end}
+    .live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
 
-    #langBtn {
-      background: #1a1a2e; color: #fff; border: none;
-      padding: 7px 16px; border-radius: 20px; cursor: pointer;
-      font-size: 0.85rem; transition: background 0.2s;
-    }
-    #langBtn:hover { background: #16213e; }
+    /* ── Summary cards ── */
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+    .sum-card{border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+    .sum-card .sum-label{font-size:0.68rem;opacity:0.75;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+    .sum-card .sum-val{font-size:1.15rem;font-weight:700}
+    .card-total{background:#1a1a2e;color:#fff}
+    .card-add{background:#dcfce7;color:#15803d}
+    .card-remove{background:#fee2e2;color:#b91c1c}
 
-    .live-badge {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.75rem; color: #22c55e; font-weight: 600;
-      margin-bottom: 16px; justify-content: flex-end;
-    }
-    .live-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #22c55e; animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50%      { opacity:0.4; transform:scale(0.7); }
-    }
+    /* ── Notes section ── */
+    .notes-section{background:#fff;border-radius:16px;padding:16px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07)}
+    .notes-section .sec-title{font-size:0.75rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px}
+    .notes-grid{display:flex;flex-direction:column;gap:10px}
+    .note-row{display:flex;align-items:center;justify-content:space-between}
+    .note-badge{width:48px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;color:#fff;flex-shrink:0}
+    .b100{background:#f59e0b}.b200{background:#3b82f6}.b500{background:#8b5cf6}
+    .note-sub{font-size:0.8rem;color:#999;min-width:60px}
+    .note-ctrl{display:flex;align-items:center;gap:6px}
+    .cbtn{width:28px;height:28px;border:none;border-radius:7px;background:#f0f4f8;font-size:1.1rem;cursor:pointer;font-weight:700;color:#1a1a2e;display:flex;align-items:center;justify-content:center}
+    .cbtn:active{transform:scale(0.9)}
+    .ninput{width:46px;text-align:center;border:1.5px solid #e2e8f0;border-radius:7px;padding:5px 2px;font-size:0.95rem;font-weight:600;color:#1a1a2e;outline:none;-moz-appearance:textfield}
+    .ninput::-webkit-inner-spin-button,.ninput::-webkit-outer-spin-button{-webkit-appearance:none}
+    .ninput:focus{border-color:#1a1a2e}
+    .notes-total{margin-top:12px;padding-top:12px;border-top:1px solid #f0f4f8;display:flex;justify-content:space-between;align-items:center}
+    .notes-total span{font-size:0.82rem;color:#888}
+    .notes-total strong{font-size:1.1rem;color:#1a1a2e;font-weight:700}
 
-    .balance-card {
-      background: #1a1a2e; color: #fff; border-radius: 16px;
-      padding: 28px 24px; text-align: center; margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(26,26,46,0.15);
-    }
-    .balance-label {
-      font-size: 0.85rem; opacity: 0.75; margin-bottom: 8px;
-      letter-spacing: 0.05em; text-transform: uppercase;
-    }
-    .balance-amount { font-size: 2.4rem; font-weight: 700; }
+    /* ── Input section ── */
+    .input-section{background:#fff;border-radius:16px;padding:16px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07)}
+    .input-section input{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.92rem;margin-bottom:10px;outline:none;color:#333;transition:border-color 0.2s}
+    .input-section input:focus{border-color:#1a1a2e}
+    .btn-row{display:flex;gap:10px}
+    .btn-add,.btn-remove{flex:1;padding:11px;border:none;border-radius:10px;font-size:0.92rem;font-weight:600;cursor:pointer;transition:opacity 0.2s,transform 0.1s}
+    .btn-add:active,.btn-remove:active{transform:scale(0.97)}
+    .btn-add{background:#22c55e;color:#fff}
+    .btn-remove{background:#ef4444;color:#fff}
+    .btn-add:disabled,.btn-remove:disabled{opacity:0.5;cursor:not-allowed}
 
-    .input-section {
-      background: #fff; border-radius: 16px; padding: 20px;
-      margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-    }
-    .input-section input {
-      width: 100%; padding: 11px 14px;
-      border: 1.5px solid #e2e8f0; border-radius: 10px;
-      font-size: 0.95rem; margin-bottom: 12px;
-      outline: none; color: #333; transition: border-color 0.2s;
-    }
-    .input-section input:focus { border-color: #1a1a2e; }
+    /* ── Transactions ── */
+    .txn-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .txn-header h2{font-size:0.82rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em}
+    .txn-list{display:flex;flex-direction:column;gap:8px}
+    .txn-item{background:#fff;border-radius:12px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:0 1px 6px rgba(0,0,0,0.06);gap:10px}
+    .txn-left{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+    .txn-reason{font-size:0.9rem;color:#444}
+    .txn-date{font-size:0.72rem;color:#bbb}
+    .txn-amount{font-size:0.98rem;font-weight:700;white-space:nowrap}
+    .amt-add{color:#16a34a}.amt-remove{color:#dc2626}
+    .empty{text-align:center;color:#ccc;font-size:0.88rem;padding:28px 0}
 
-    .btn-row { display: flex; gap: 10px; }
-    .btn-add, .btn-remove {
-      flex: 1; padding: 11px; border: none; border-radius: 10px;
-      font-size: 0.95rem; font-weight: 600; cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-    }
-    .btn-add:active, .btn-remove:active { transform: scale(0.97); }
-    .btn-add    { background: #22c55e; color: #fff; }
-    .btn-add:hover { opacity: 0.88; }
-    .btn-remove { background: #ef4444; color: #fff; }
-    .btn-remove:hover { opacity: 0.88; }
-    .btn-add:disabled, .btn-remove:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* ── Top loading bar ── */
+    #topbar{position:fixed;top:0;left:0;right:0;height:3px;background:#e2e8f0;z-index:9999;transition:opacity 0.4s}
+    #topbar.hidden{opacity:0;pointer-events:none}
+    .topbar-fill{height:100%;width:40%;background:linear-gradient(90deg,#1a1a2e,#22c55e);border-radius:2px;animation:slide 1.2s ease-in-out infinite}
+    @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
 
-    .transactions-section h2 {
-      font-size: 0.95rem; font-weight: 600; color: #666;
-      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
-    }
-    .transaction-list { display: flex; flex-direction: column; gap: 8px; }
+    /* ── Footer ── */
+    .footer{text-align:center;font-size:0.72rem;color:#bbb;margin-top:24px;padding-bottom:10px}
 
-    .transaction-item {
-      background: #fff; border-radius: 12px; padding: 14px 16px;
-      display: flex; justify-content: space-between; align-items: flex-start;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.06); gap: 10px;
-    }
-    .txn-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-    .transaction-reason { font-size: 0.92rem; color: #444; }
-    .txn-meta { font-size: 0.74rem; color: #bbb; }
-    .transaction-amount { font-size: 1rem; font-weight: 700; white-space: nowrap; }
-    .amount-add    { color: #16a34a; }
-    .amount-remove { color: #dc2626; }
-
-    .empty-state {
-      text-align: center; color: #aaa; font-size: 0.9rem; padding: 30px 0;
-    }
-
-    /* Loading — thin top bar */
-    #loadingOverlay {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: 3px; background: #e2e8f0;
-      z-index: 9999; transition: opacity 0.4s ease;
-    }
-    #loadingOverlay.hidden { opacity: 0; pointer-events: none; }
-    #loadingOverlay p { display: none; }
-    .spinner {
-      height: 100%; width: 40%;
-      background: linear-gradient(90deg, #1a1a2e, #22c55e);
-      border-radius: 2px;
-      animation: slide 1.2s ease-in-out infinite;
-    }
-    @keyframes slide {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(350%); }
-    }
-
-    /* Install Banner */
-    #installBanner {
-      display: none; position: fixed; bottom: 20px; left: 50%;
-      transform: translateX(-50%); width: calc(100% - 32px); max-width: 460px;
-      background: #1a1a2e; color: #fff; border-radius: 16px;
-      padding: 14px 18px; align-items: center;
-      justify-content: space-between; gap: 12px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25); z-index: 998;
-    }
-    #installBanner.hidden { display: none !important; }
-    .install-left { display: flex; align-items: center; gap: 12px; }
-    .install-left img { width: 40px; height: 40px; border-radius: 10px; }
-    .install-text { font-size: 0.88rem; line-height: 1.4; }
-    .install-text strong { display: block; font-size: 0.95rem; }
-    #installBtn {
-      background: #22c55e; color: #fff; border: none;
-      padding: 9px 18px; border-radius: 10px; font-size: 0.88rem;
-      font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    }
-    #dismissBtn {
-      background: none; border: none; color: rgba(255,255,255,0.5);
-      font-size: 1.3rem; cursor: pointer; flex-shrink: 0; padding: 0 2px;
-    }
+    /* ── Install Banner ── */
+    #installBanner{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:460px;background:#1a1a2e;color:#fff;border-radius:16px;padding:14px 18px;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,0.25);z-index:998}
+    #installBanner.hidden{display:none!important}
+    .inst-left{display:flex;align-items:center;gap:12px}
+    .inst-left img{width:38px;height:38px;border-radius:9px}
+    .inst-text{font-size:0.85rem;line-height:1.4}
+    .inst-text strong{display:block;font-size:0.92rem}
+    #installBtn{background:#22c55e;color:#fff;border:none;padding:8px 16px;border-radius:9px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+    #dismissBtn{background:none;border:none;color:rgba(255,255,255,0.45);font-size:1.3rem;cursor:pointer;flex-shrink:0}
   </style>
 </head>
 <body>
 
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-    <p>Connecting...</p>
-  </div>
+  <div id="topbar"><div class="topbar-fill"></div></div>
 
   <div class="container">
+
+    <!-- Section switcher -->
+    <div class="switcher">
+      <button id="btnGhar" class="active" onclick="switchSection('ghar')">🏠 Ghar Kharch</button>
+      <button id="btnTijori" onclick="switchSection('tijori')">🏦 Tijori</button>
+    </div>
+
+    <!-- Header -->
     <div class="header">
-      <h1 id="appTitle">Money Tracker</h1>
+      <h1 id="appTitle">Ghar Kharch</h1>
       <button id="langBtn">हिंदी</button>
     </div>
 
@@ -175,86 +123,148 @@
       <span id="liveLabel">Live – shared with everyone</span>
     </div>
 
-    <div class="balance-card">
-      <div class="balance-label" id="balanceLabel">Total Balance</div>
-      <div class="balance-amount" id="balanceAmount">₹0</div>
+    <!-- Summary -->
+    <div class="summary-grid">
+      <div class="sum-card card-total">
+        <div class="sum-label" id="lblTotal">Total</div>
+        <div class="sum-val" id="valTotal">₹0</div>
+      </div>
+      <div class="sum-card card-add">
+        <div class="sum-label" id="lblAdded">Added</div>
+        <div class="sum-val" id="valAdded">₹0</div>
+      </div>
+      <div class="sum-card card-remove">
+        <div class="sum-label" id="lblRemoved">Removed</div>
+        <div class="sum-val" id="valRemoved">₹0</div>
+      </div>
     </div>
 
+    <!-- Notes calculator -->
+    <div class="notes-section">
+      <div class="sec-title" id="lblNotes">Count Notes</div>
+      <div class="notes-grid">
+        <div class="note-row">
+          <div class="note-badge b100">₹100</div>
+          <div class="note-sub" id="sub100">₹0</div>
+          <div class="note-ctrl">
+            <button class="cbtn" onclick="adj('n100',-1)">−</button>
+            <input class="ninput" type="number" id="n100" value="0" min="0" oninput="calcNotes()"/>
+            <button class="cbtn" onclick="adj('n100',1)">+</button>
+          </div>
+        </div>
+        <div class="note-row">
+          <div class="note-badge b200">₹200</div>
+          <div class="note-sub" id="sub200">₹0</div>
+          <div class="note-ctrl">
+            <button class="cbtn" onclick="adj('n200',-1)">−</button>
+            <input class="ninput" type="number" id="n200" value="0" min="0" oninput="calcNotes()"/>
+            <button class="cbtn" onclick="adj('n200',1)">+</button>
+          </div>
+        </div>
+        <div class="note-row">
+          <div class="note-badge b500">₹500</div>
+          <div class="note-sub" id="sub500">₹0</div>
+          <div class="note-ctrl">
+            <button class="cbtn" onclick="adj('n500',-1)">−</button>
+            <input class="ninput" type="number" id="n500" value="0" min="0" oninput="calcNotes()"/>
+            <button class="cbtn" onclick="adj('n500',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="notes-total">
+        <span id="lblNotesTotal">Notes Total</span>
+        <strong id="notesTotal">₹0</strong>
+      </div>
+    </div>
+
+    <!-- Add/Remove -->
     <div class="input-section">
-      <input type="number" id="amountInput" placeholder="Amount (₹)" min="0" />
-      <input type="text"   id="reasonInput" placeholder="Reason" />
+      <input type="number" id="amountInput" placeholder="Amount (₹)" min="0"/>
+      <input type="text"   id="reasonInput" placeholder="Reason"/>
       <div class="btn-row">
-        <button class="btn-add"    id="addBtn"    onclick="handleTransaction('add')">+ Add Money</button>
-        <button class="btn-remove" id="removeBtn" onclick="handleTransaction('remove')">- Remove Money</button>
+        <button class="btn-add"    id="addBtn"    onclick="handleTxn('add')">+ Add Money</button>
+        <button class="btn-remove" id="removeBtn" onclick="handleTxn('remove')">− Remove Money</button>
       </div>
     </div>
 
-    <div class="transactions-section">
-      <h2 id="transactionsLabel">Transactions</h2>
-      <div class="transaction-list" id="transactionList">
-        <div class="empty-state">No transactions yet.</div>
-      </div>
+    <!-- Transactions -->
+    <div class="txn-header">
+      <h2 id="lblTxns">Transactions</h2>
     </div>
+    <div class="txn-list" id="txnList">
+      <div class="empty" id="emptyMsg">No transactions yet.</div>
+    </div>
+
+    <div class="footer">Developed by Ajay Meena</div>
   </div>
 
+  <!-- Install Banner -->
   <div id="installBanner" class="hidden">
-    <div class="install-left">
-      <img src="icons/icon-192x192.png" alt="icon" />
-      <div class="install-text">
-        <strong>Ghar Kharch</strong>
-        Install app on your phone
-      </div>
+    <div class="inst-left">
+      <img src="icons/icon-192x192.png" alt="icon"/>
+      <div class="inst-text"><strong>Ghar Kharch</strong>Install on your phone</div>
     </div>
     <button id="installBtn">Install</button>
-    <button id="dismissBtn" aria-label="Dismiss">×</button>
+    <button id="dismissBtn">×</button>
   </div>
 
-  <!-- Supabase SDK (minified) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
   <script>
-    // ── Supabase config ───────────────────────────────────────────
-    const SUPABASE_URL  = 'https://myvnwgjbwcurxgwchmxb.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15dm53Z2pid2N1cnhnd2NobXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTAyMjgsImV4cCI6MjA5NjU2NjIyOH0.gTnpMXeNYIe1GrwcUd0T-NSBgit9tv-0VX9F3cc8EKw';
+    // ── Supabase ──────────────────────────────────────────────────
+    const SURL = 'https://myvnwgjbwcurxgwchmxb.supabase.co';
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15dm53Z2pid2N1cnhnd2NobXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTAyMjgsImV4cCI6MjA5NjU2NjIyOH0.gTnpMXeNYIe1GrwcUd0T-NSBgit9tv-0VX9F3cc8EKw';
+    const db = supabase.createClient(SURL, SKEY);
 
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+    // ── State ─────────────────────────────────────────────────────
+    let section = localStorage.getItem('section') || 'ghar'; // 'ghar' | 'tijori'
+    let lang    = localStorage.getItem('lang')    || 'en';
 
-    // ── Language ──────────────────────────────────────────────────
-    const strings = {
+    // ── Language strings ──────────────────────────────────────────
+    const S = {
       en: {
-        appTitle: 'Money Tracker', balanceLabel: 'Total Balance',
-        amountPlaceholder: 'Amount (₹)', reasonPlaceholder: 'Reason',
-        addBtn: '+ Add Money', removeBtn: '- Remove Money',
-        transactionsLabel: 'Transactions', emptyState: 'No transactions yet.',
-        langBtn: 'हिंदी', liveLabel: 'Live – shared with everyone',
-        alertAmount: 'Please enter a valid amount.',
-        alertReason: 'Please enter a reason.',
+        ghar:'Ghar Kharch', tijori:'Tijori',
+        total:'Total', added:'Added', removed:'Removed',
+        notes:'Count Notes', notesTotal:'Notes Total',
+        amount:'Amount (₹)', reason:'Reason',
+        addBtn:'+ Add Money', removeBtn:'− Remove Money',
+        txns:'Transactions', empty:'No transactions yet.',
+        live:'Live – shared with everyone',
+        langBtn:'हिंदी',
+        errAmt:'Please enter a valid amount.',
+        errReason:'Please enter a reason.',
       },
       hi: {
-        appTitle: 'पैसे ट्रैकर', balanceLabel: 'कुल बैलेंस',
-        amountPlaceholder: 'राशि (₹)', reasonPlaceholder: 'कारण',
-        addBtn: '+ पैसे जोड़ें', removeBtn: '- पैसे हटाएं',
-        transactionsLabel: 'लेन-देन', emptyState: 'अभी कोई लेन-देन नहीं।',
-        langBtn: 'English', liveLabel: 'लाइव – सभी के लिए',
-        alertAmount: 'कृपया सही राशि दर्ज करें।',
-        alertReason: 'कृपया कारण दर्ज करें।',
+        ghar:'घर खर्च', tijori:'तिजोरी',
+        total:'कुल', added:'जोड़ा', removed:'निकाला',
+        notes:'नोट गिनें', notesTotal:'नोट कुल',
+        amount:'राशि (₹)', reason:'कारण',
+        addBtn:'+ पैसे जोड़ें', removeBtn:'− पैसे निकालें',
+        txns:'लेन-देन', empty:'अभी कोई लेन-देन नहीं।',
+        live:'लाइव – सभी के लिए',
+        langBtn:'English',
+        errAmt:'कृपया सही राशि दर्ज करें।',
+        errReason:'कृपया कारण दर्ज करें।',
       }
     };
 
-    let lang = localStorage.getItem('lang') || 'en';
+    function t(k){ return S[lang][k]; }
 
-    function applyLang() {
-      const s = strings[lang];
-      document.getElementById('appTitle').textContent          = s.appTitle;
-      document.getElementById('balanceLabel').textContent      = s.balanceLabel;
-      document.getElementById('amountInput').placeholder       = s.amountPlaceholder;
-      document.getElementById('reasonInput').placeholder       = s.reasonPlaceholder;
-      document.getElementById('addBtn').textContent            = s.addBtn;
-      document.getElementById('removeBtn').textContent         = s.removeBtn;
-      document.getElementById('transactionsLabel').textContent = s.transactionsLabel;
-      document.getElementById('langBtn').textContent           = s.langBtn;
-      document.getElementById('liveLabel').textContent         = s.liveLabel;
+    function applyLang(){
+      document.getElementById('appTitle').textContent  = section === 'ghar' ? t('ghar') : t('tijori');
+      document.getElementById('langBtn').textContent   = t('langBtn');
+      document.getElementById('liveLabel').textContent = t('live');
+      document.getElementById('lblTotal').textContent  = t('total');
+      document.getElementById('lblAdded').textContent  = t('added');
+      document.getElementById('lblRemoved').textContent= t('removed');
+      document.getElementById('lblNotes').textContent  = t('notes');
+      document.getElementById('lblNotesTotal').textContent = t('notesTotal');
+      document.getElementById('amountInput').placeholder  = t('amount');
+      document.getElementById('reasonInput').placeholder  = t('reason');
+      document.getElementById('addBtn').textContent    = t('addBtn');
+      document.getElementById('removeBtn').textContent = t('removeBtn');
+      document.getElementById('lblTxns').textContent   = t('txns');
+      document.getElementById('btnGhar').textContent   = '🏠 ' + t('ghar');
+      document.getElementById('btnTijori').textContent = '🏦 ' + t('tijori');
     }
 
     document.getElementById('langBtn').addEventListener('click', () => {
@@ -263,120 +273,130 @@
       applyLang();
     });
 
-    function hideOverlay() {
-      const el = document.getElementById('loadingOverlay');
-      el.classList.add('hidden');
-      setTimeout(() => el.style.display = 'none', 320);
+    // ── Section switch ────────────────────────────────────────────
+    function switchSection(s){
+      section = s;
+      localStorage.setItem('section', s);
+      document.getElementById('btnGhar').classList.toggle('active',   s === 'ghar');
+      document.getElementById('btnTijori').classList.toggle('active', s === 'tijori');
+      applyLang();
+      loadData();
+    }
+
+    // ── Notes calculator ──────────────────────────────────────────
+    function nv(id){ return Math.max(0, parseInt(document.getElementById(id).value)||0); }
+    function adj(id, d){
+      const el = document.getElementById(id);
+      el.value = Math.max(0,(parseInt(el.value)||0)+d);
+      calcNotes();
+    }
+    function calcNotes(){
+      const v100=nv('n100'), v200=nv('n200'), v500=nv('n500');
+      document.getElementById('sub100').textContent = '₹'+(v100*100).toLocaleString('en-IN');
+      document.getElementById('sub200').textContent = '₹'+(v200*200).toLocaleString('en-IN');
+      document.getElementById('sub500').textContent = '₹'+(v500*500).toLocaleString('en-IN');
+      const tot = v100*100 + v200*200 + v500*500;
+      document.getElementById('notesTotal').textContent = '₹'+tot.toLocaleString('en-IN');
+    }
+
+    // ── Top bar ───────────────────────────────────────────────────
+    function showBar(){ document.getElementById('topbar').classList.remove('hidden'); }
+    function hideBar(){
+      const b = document.getElementById('topbar');
+      b.classList.add('hidden');
+      setTimeout(()=>b.style.display='none', 400);
     }
 
     // ── Render ────────────────────────────────────────────────────
-    function renderAll(rows) {
-      hideOverlay();
+    function renderAll(rows){
+      hideBar();
+      const totalAdded   = rows.filter(r=>r.type==='add').reduce((s,r)=>s+Number(r.amount),0);
+      const totalRemoved = rows.filter(r=>r.type==='remove').reduce((s,r)=>s+Number(r.amount),0);
+      const net          = totalAdded - totalRemoved;
 
-      const total = rows.reduce((s, t) => t.type === 'add' ? s + t.amount : s - t.amount, 0);
-      document.getElementById('balanceAmount').textContent = '₹' + total.toLocaleString('en-IN');
+      document.getElementById('valTotal').textContent   = '₹'+net.toLocaleString('en-IN');
+      document.getElementById('valAdded').textContent   = '₹'+totalAdded.toLocaleString('en-IN');
+      document.getElementById('valRemoved').textContent = '₹'+totalRemoved.toLocaleString('en-IN');
 
-      const list = document.getElementById('transactionList');
-      if (!rows.length) {
-        list.innerHTML = `<div class="empty-state">${strings[lang].emptyState}</div>`;
+      const list = document.getElementById('txnList');
+      if(!rows.length){
+        list.innerHTML = `<div class="empty">${t('empty')}</div>`;
         return;
       }
-
-      list.innerHTML = rows.map(t => {
-        const date = t.created_at ? new Date(t.created_at).toLocaleString('en-IN', {
-          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-        }) : '';
-        return `
-          <div class="transaction-item">
-            <div class="txn-left">
-              <span class="transaction-reason">${esc(t.reason)}</span>
-              ${date ? `<span class="txn-meta">${date}</span>` : ''}
-            </div>
-            <span class="transaction-amount ${t.type === 'add' ? 'amount-add' : 'amount-remove'}">
-              ${t.type === 'add' ? '+' : '−'}₹${Number(t.amount).toLocaleString('en-IN')}
-            </span>
-          </div>`;
+      list.innerHTML = rows.map(r=>{
+        const d = r.created_at ? new Date(r.created_at) : null;
+        const dateStr = d ? d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+        return `<div class="txn-item">
+          <div class="txn-left">
+            <span class="txn-reason">${esc(r.reason)}</span>
+            ${dateStr?`<span class="txn-date">${dateStr}</span>`:''}
+          </div>
+          <span class="txn-amount ${r.type==='add'?'amt-add':'amt-remove'}">
+            ${r.type==='add'?'+':'−'}₹${Number(r.amount).toLocaleString('en-IN')}
+          </span>
+        </div>`;
       }).join('');
 
-      // update cache
-      localStorage.setItem('txn_cache', JSON.stringify(rows));
+      localStorage.setItem('cache_'+section, JSON.stringify(rows));
     }
 
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // ── Fetch ─────────────────────────────────────────────────────
+    async function fetchAndRender(){
+      try{
+        const tbl = section === 'ghar' ? 'transactions' : 'tijori';
+        const {data,error} = await db.from(tbl).select('*').order('created_at',{ascending:false});
+        if(!error && data) renderAll(data);
+      } catch(e){ console.error(e); }
+      finally{ hideBar(); }
     }
 
-    // ── Fetch fresh from Supabase (always trust server data) ──────
-    async function fetchAndRender() {
-      try {
-        const { data, error } = await db
-          .from('transactions')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (!error && data) renderAll(data);
-      } catch(e) {
-        console.error(e);
-      } finally {
-        hideOverlay();
-      }
-    }
-
-    // ── Initial load ──────────────────────────────────────────────
-    function loadTransactions() {
-      // Show cache instantly so screen isn't blank
-      const cached = localStorage.getItem('txn_cache');
-      if (cached) {
-        try { renderAll(JSON.parse(cached)); } catch(e) {}
-      }
-      // Always fetch fresh from server
+    function loadData(){
+      showBar();
+      // instant cache
+      const cached = localStorage.getItem('cache_'+section);
+      if(cached){ try{ renderAll(JSON.parse(cached)); }catch(e){} }
       fetchAndRender();
     }
 
-    // ── Real-time: only fetch fresh, never show stale cache ───────
-    db.channel('txn-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' },
-        () => fetchAndRender()
-      )
-      .subscribe(status => {
-        console.log('Realtime status:', status);
-      });
+    // ── Real-time ─────────────────────────────────────────────────
+    function setupRealtime(){
+      db.channel('ghar-live')
+        .on('postgres_changes',{event:'*',schema:'public',table:'transactions'},()=>{ if(section==='ghar') fetchAndRender(); })
+        .subscribe();
+      db.channel('tijori-live')
+        .on('postgres_changes',{event:'*',schema:'public',table:'tijori'},()=>{ if(section==='tijori') fetchAndRender(); })
+        .subscribe();
+    }
 
-    // ── Polling fallback every 10s (in case realtime fails) ───────
-    setInterval(fetchAndRender, 10000);
+    // ── Polling fallback every 15s ────────────────────────────────
+    setInterval(fetchAndRender, 15000);
 
     // ── Add / Remove ──────────────────────────────────────────────
-    async function handleTransaction(type) {
-      const s = strings[lang];
-      const amountVal = parseFloat(document.getElementById('amountInput').value);
-      const reason    = document.getElementById('reasonInput').value.trim();
-
-      if (!amountVal || amountVal <= 0) { alert(s.alertAmount); return; }
-      if (!reason)                       { alert(s.alertReason); return; }
+    async function handleTxn(type){
+      const amt    = parseFloat(document.getElementById('amountInput').value);
+      const reason = document.getElementById('reasonInput').value.trim();
+      if(!amt||amt<=0){ alert(t('errAmt')); return; }
+      if(!reason)      { alert(t('errReason')); return; }
 
       document.getElementById('addBtn').disabled    = true;
       document.getElementById('removeBtn').disabled = true;
 
-      // Optimistic: add to cache & screen immediately so user sees it at once
-      const optimistic = {
-        id: 'temp-' + Date.now(),
-        type, amount: amountVal, reason,
-        created_at: new Date().toISOString()
-      };
-      const cached = JSON.parse(localStorage.getItem('txn_cache') || '[]');
-      renderAll([optimistic, ...cached]);
+      // Optimistic
+      const cached = JSON.parse(localStorage.getItem('cache_'+section)||'[]');
+      const opt = {id:'tmp-'+Date.now(), type, amount:amt, reason, created_at:new Date().toISOString()};
+      renderAll([opt,...cached]);
 
-      // Save to Supabase
-      const { error } = await db.from('transactions').insert({ type, amount: amountVal, reason });
+      const tbl = section === 'ghar' ? 'transactions' : 'tijori';
+      const {error} = await db.from(tbl).insert({type, amount:amt, reason});
 
-      if (error) {
-        alert('Error saving. Please try again.');
-        console.error(error);
-        // Rollback optimistic update
+      if(error){
+        alert('Error saving. Try again.'); console.error(error);
         renderAll(cached);
       } else {
         document.getElementById('amountInput').value = '';
         document.getElementById('reasonInput').value = '';
-        // Fetch confirmed data from server (replaces optimistic)
         fetchAndRender();
       }
 
@@ -386,24 +406,23 @@
 
     // ── Init ──────────────────────────────────────────────────────
     applyLang();
-    loadTransactions();
+    calcNotes();
+    switchSection(section);
+    setupRealtime();
 
     // ── PWA ───────────────────────────────────────────────────────
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-
-    let deferredPrompt = null;
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+    let dp = null;
     const banner = document.getElementById('installBanner');
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault(); deferredPrompt = e;
-      banner.classList.remove('hidden'); banner.style.display = 'flex';
+    window.addEventListener('beforeinstallprompt', e=>{
+      e.preventDefault(); dp=e;
+      banner.classList.remove('hidden'); banner.style.display='flex';
     });
-    document.getElementById('installBtn').addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt(); await deferredPrompt.userChoice;
-      deferredPrompt = null; banner.classList.add('hidden');
+    document.getElementById('installBtn').addEventListener('click', async()=>{
+      if(!dp) return; dp.prompt(); await dp.userChoice; dp=null; banner.classList.add('hidden');
     });
-    document.getElementById('dismissBtn').addEventListener('click', () => banner.classList.add('hidden'));
-    window.addEventListener('appinstalled', () => { banner.classList.add('hidden'); deferredPrompt = null; });
+    document.getElementById('dismissBtn').addEventListener('click',()=>banner.classList.add('hidden'));
+    window.addEventListener('appinstalled',()=>{ banner.classList.add('hidden'); dp=null; });
   </script>
 </body>
 </html>
